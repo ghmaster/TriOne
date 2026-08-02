@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>都立用語カード｜歴史</title>
+<style>
+  :root{
+    --bg:#14161a; --panel:#1c1f26; --panel-2:#232732; --line:#2c313c;
+    --ink:#e8eaed; --sub:#9aa2ad; --accent:#c9a24b; --ok:#4a9d7f; --miss:#c1655a;
+    --shadow:0 10px 30px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:radial-gradient(900px 500px at 80% -10%, rgba(201,162,75,.06), transparent 60%),var(--bg);
+    color:var(--ink);
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;line-height:1.6;min-height:100%;
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:24px 18px 80px}
+  header{margin:8px 2px 20px}
+  .brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .brand h1{font-size:22px;letter-spacing:.06em;font-weight:700}
+  .brand .tag{font-size:11px;color:var(--accent);letter-spacing:.16em;border:1px solid var(--line);padding:3px 8px;border-radius:999px}
+  .lead{color:var(--sub);font-size:13px;margin-top:6px}
+
+  .section-label{font-size:11px;color:var(--sub);letter-spacing:.12em;margin:18px 2px 8px}
+  .eras{display:flex;flex-wrap:wrap;gap:8px}
+  .era-btn{background:var(--panel);border:1px solid var(--line);color:var(--sub);
+    padding:8px 14px;border-radius:10px;font-size:13px;cursor:pointer;transition:.15s}
+  .era-btn:hover{border-color:var(--accent);color:var(--ink)}
+  .era-btn.active{background:var(--panel-2);border-color:var(--accent);color:var(--ink)}
+  .era-btn .cnt{color:var(--accent);font-size:11px;margin-left:6px}
+
+  .modes{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .mode-btn{background:var(--panel);border:1px solid var(--line);color:var(--sub);
+    padding:7px 13px;border-radius:10px;font-size:12px;cursor:pointer;transition:.15s}
+  .mode-btn:hover{border-color:var(--accent);color:var(--ink)}
+  .mode-btn.active{background:var(--panel-2);border-color:var(--accent);color:var(--ink)}
+  .review-btn{border-style:dashed}
+  .review-btn.has{color:var(--miss)}
+  .review-btn .cnt{color:var(--accent);font-size:11px;margin-left:5px}
+  .review-btn.has .cnt{color:var(--miss)}
+
+  .status{display:flex;justify-content:space-between;align-items:center;margin:20px 2px 12px;font-size:12px;color:var(--sub)}
+  .bar{height:4px;background:var(--line);border-radius:99px;overflow:hidden;margin:0 2px 20px}
+  .bar > i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+
+  .stage{perspective:1400px;margin-bottom:22px}
+  .card{position:relative;width:100%;min-height:280px;transform-style:preserve-3d;
+    transition:transform .5s cubic-bezier(.2,.7,.2,1);cursor:pointer}
+  .card.flip{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;
+    background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);
+    padding:30px 26px;display:flex;flex-direction:column}
+  .face .eyebrow{font-size:11px;letter-spacing:.14em;color:var(--accent)}
+  .face .body{flex:1;display:flex;align-items:center}
+  .q-text{font-size:21px;font-weight:600;line-height:1.7}
+  .a-text{font-size:28px;font-weight:700;color:var(--accent);line-height:1.55}
+  .face .note{font-size:13px;color:var(--sub);margin-top:12px;border-top:1px solid var(--line);padding-top:12px}
+  .back{transform:rotateY(180deg)}
+  .hint-flip{font-size:12px;color:var(--sub);text-align:center;margin-top:2px}
+
+  .judge{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
+  .judge button{padding:15px;border-radius:13px;border:1px solid var(--line);
+    font-size:15px;font-weight:700;cursor:pointer;background:var(--panel);color:var(--ink);transition:.15s}
+  .judge .miss{border-color:rgba(193,101,90,.5)}
+  .judge .miss:hover{background:rgba(193,101,90,.15)}
+  .judge .ok{border-color:rgba(74,157,127,.5)}
+  .judge .ok:hover{background:rgba(74,157,127,.15)}
+  .judge button:disabled{opacity:.35;cursor:default}
+
+  .done{text-align:center;padding:40px 20px;background:var(--panel);
+    border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+  .done h2{font-size:20px;margin-bottom:10px}
+  .done p{color:var(--sub);font-size:14px;margin-bottom:20px}
+  .done .score{font-size:44px;font-weight:800;color:var(--accent);margin:6px 0}
+  .done button{background:var(--panel-2);border:1px solid var(--accent);color:var(--ink);
+    padding:12px 26px;border-radius:12px;font-size:14px;cursor:pointer;margin:4px}
+  .done button.secondary{border-color:var(--line);color:var(--sub)}
+
+  /* 一覧表示 */
+  .list-wrap{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+  .list-group{padding:6px 0}
+  .list-group-head{font-size:11px;letter-spacing:.12em;color:var(--accent);padding:12px 20px 6px;border-top:1px solid var(--line)}
+  .list-group:first-child .list-group-head{border-top:none}
+  .list-item{display:flex;gap:14px;padding:11px 20px;border-top:1px solid rgba(44,49,60,.5)}
+  .list-item:first-of-type{border-top:none}
+  .list-q{flex:1;font-size:14px;color:var(--ink);line-height:1.6}
+  .list-a{flex:0 0 auto;max-width:42%;text-align:right;font-size:14px;font-weight:700;color:var(--accent);line-height:1.6}
+  .list-count{font-size:12px;color:var(--sub);padding:14px 20px;border-top:1px solid var(--line)}
+
+  .foot{text-align:center;color:var(--sub);font-size:11px;margin-top:28px;line-height:1.8}
+  .foot b{color:var(--accent);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <h1>都立用語カード</h1>
+      <span class="tag">歴史</span>
+    </div>
+    <p class="lead">時代を選んで、ランダム10問または全問に挑戦。1つの用語をいろんな角度から問うので、どの向きでも答えられるように練習できる。間違えた問題はあとでまとめて解き直せる。</p>
+  </header>
+
+  <div class="section-label">時代をえらぶ</div>
+  <div class="eras" id="eras"></div>
+
+  <div class="section-label">出題モード</div>
+  <div class="modes" id="modes"></div>
+
+  <div class="status">
+    <span id="modeLabel">—</span>
+    <span id="progress">—</span>
+  </div>
+  <div class="bar"><i id="barFill"></i></div>
+
+  <div id="main"></div>
+
+  <p class="foot">
+    問題は都立共通問題の出題傾向を参考に作った<b>オリジナル</b>です（過去問そのものではありません）。<br>
+    まれに事実のズレがあるかもしれないので、あやしいと思ったら教科書でも確かめよう。
+  </p>
+</div>
+
+<script>
+/* ============================================================
+   時代ごとのストック — C案（1用語を複数の切り口で問う）
+   ERAS[].cards に各時代のカード。group=事項のまとまり。
+   ============================================================ */
+const ERAS = [
+  {
+    era:"古代文明",
+    cards:[
+      {group:"四大文明",q:"エジプト・メソポタミア・インダス・中国に代表される、大河のほとりで生まれた古代の文明をまとめて何という？",a:"（世界）四大文明",note:"いずれも農耕に適した大河の流域で発生した。"},
+      {group:"四大文明",q:"四大文明に共通する、文明が発達した立地上の特徴は？",a:"大河の流域",note:"水と、川がはこぶ肥えた土が農耕を支えた。"},
+      {group:"エジプト",q:"ナイル川の流域でおこった、ピラミッドで知られる文明は？",a:"エジプト文明",note:"太陽暦・象形文字を用いた。"},
+      {group:"エジプト",q:"エジプト文明が発達した川は？",a:"ナイル川",note:"定期的なはんらんが肥えた土をもたらした。"},
+      {group:"エジプト",q:"エジプト文明で使われた、絵をもとにした文字を何という？",a:"象形文字（神聖文字）",note:"ものの形をかたどった文字。"},
+      {group:"エジプト",q:"エジプト文明で使われた、太陽の動きをもとにした暦は？",a:"太陽暦",note:"1年を365日とした。今の暦のもと。"},
+      {group:"エジプト",q:"エジプトで、王（ファラオ）の力を示すために築かれた巨大な建造物は？",a:"ピラミッド",note:"石を積み上げた王の墓とされる。"},
+      {group:"メソポタミア",q:"チグリス川・ユーフラテス川の流域でおこった文明は？",a:"メソポタミア文明",note:"くさび形文字・太陰暦・60進法を生んだ。"},
+      {group:"メソポタミア",q:"メソポタミア文明がおこった2つの川は？",a:"チグリス川・ユーフラテス川",note:"2つの川にはさまれた地域で栄えた。"},
+      {group:"メソポタミア",q:"メソポタミア文明で、粘土板に刻まれた文字は？",a:"くさび形文字",note:"くさびのような形の記号を組み合わせた。"},
+      {group:"メソポタミア",q:"メソポタミア文明で使われた、月の満ち欠けをもとにした暦は？",a:"太陰暦",note:"エジプトの太陽暦と区別して覚える。"},
+      {group:"メソポタミア",q:"メソポタミアで生まれ、今も時間や角度に使われている数の表し方は？",a:"60進法",note:"1時間＝60分などに残る。"},
+      {group:"メソポタミア",q:"「目には目を、歯には歯を」で知られる、メソポタミアで定められた法典は？",a:"ハンムラビ法典",note:"復讐のかたちで刑罰を定めた。"},
+      {group:"インダス",q:"インダス川の流域でおこり、計画的な都市がつくられた文明は？",a:"インダス文明",note:"インダス文字は未解読。"},
+      {group:"インダス",q:"インダス文明を代表する、下水道まで整った計画都市の遺跡は？",a:"モヘンジョ・ダロ",note:"れんが造りで整然と区画されていた。"},
+      {group:"インダス",q:"インダス文明ののち、アーリア人が持ちこんだきびしい身分制度は？",a:"カースト制度",note:"バラモン（僧）を頂点とする身分の区分。"},
+      {group:"インダス",q:"カースト制度で最上位に置かれた、司祭（僧）の身分は？",a:"バラモン",note:"アーリア人が先住民を従えてつくった。"},
+      {group:"中国文明",q:"黄河・長江の流域でおこり、殷や甲骨文字で知られる文明は？",a:"中国文明",note:"青銅器の製作も進んだ。"},
+      {group:"中国文明",q:"中国文明で、占いの結果を亀の甲や骨に刻んだ、漢字のもとになった文字は？",a:"甲骨文字",note:"殷でさかんに使われた。"},
+      {group:"中国文明",q:"紀元前16世紀ごろ中国でおこり、甲骨文字を用いた王朝は？",a:"殷",note:"青銅器の祭器で有名。のちに周がほろぼした。"},
+      {group:"中国文明",q:"紀元前3世紀に初めて中国を統一した王朝は？",a:"秦",note:"始皇帝が統一。万里の長城を整備した。"},
+      {group:"中国文明",q:"秦を統一に導き、万里の長城を築いた王は？",a:"始皇帝",note:"北方の遊牧民の侵入を防ごうとした。"},
+      {group:"中国文明",q:"始皇帝が北方民族の侵入を防ぐために築いた長大な防壁は？",a:"万里の長城",note:"現在も残る世界的な遺構。"},
+      {group:"中国文明",q:"秦のあとに中国を治め、シルクロードで西方と交流した王朝は？",a:"漢",note:"絹などが西方へ運ばれた。"},
+      {group:"中国文明",q:"漢の時代に東西を結び、絹などが運ばれた交易路は？",a:"シルクロード（絹の道）",note:"のちに仏教が中国へ伝わる道にもなった。"},
+      {group:"ギリシャ・ローマ",q:"古代ギリシャで各地につくられた、アテネやスパルタのような都市国家を何という？",a:"ポリス",note:"アテネでは市民が政治に参加する仕組みが発達。"},
+      {group:"ギリシャ・ローマ",q:"アテネのアクロポリスの丘に建てられた、ギリシャを代表する神殿は？",a:"パルテノン神殿",note:"ギリシャ建築の代表例。"},
+      {group:"ギリシャ・ローマ",q:"地中海一帯を支配し、はじめ共和政、のちに皇帝が治めた古代の大帝国は？",a:"ローマ帝国",note:"水道・道路・法律などをのちの世に残した。"},
+      {group:"宗教",q:"仏教・キリスト教・イスラム教の3つをまとめて何という？",a:"三大宗教",note:"民族をこえて広く信仰される宗教。"},
+      {group:"宗教",q:"紀元前5世紀ごろ、インドでシャカ（釈迦）が開いた宗教は？",a:"仏教",note:"のちに中国・朝鮮を経て日本へ伝わった。"},
+      {group:"宗教",q:"仏教を開いた人物は？",a:"シャカ（釈迦）",note:"苦しみから救われる道を説いた。"},
+      {group:"宗教",q:"1世紀ごろ、パレスチナでイエスの教えをもとに生まれた宗教は？",a:"キリスト教",note:"教えは聖書にまとめられ、ヨーロッパへ広がった。"},
+      {group:"宗教",q:"キリスト教のもとになる教えを説いた人物は？",a:"イエス",note:"その教えは弟子たちが広めた。"},
+      {group:"宗教",q:"7世紀、アラビア半島でムハンマドが開いた宗教は？",a:"イスラム教",note:"聖典はコーラン。西アジア〜北アフリカへ広がった。"},
+      {group:"宗教",q:"イスラム教を開いた人物は？",a:"ムハンマド",note:"唯一神アラーの教えを説いた。"},
+      {group:"宗教",q:"紀元前6世紀ごろ、中国で孔子が説いた、思いやりや礼を重んじる教えは？",a:"儒学（儒教）",note:"教えは『論語』にまとめられ、日本にも影響した。"},
+      {group:"宗教",q:"儒学（儒教）のもとを説いた中国の思想家は？",a:"孔子",note:"弟子が教えを『論語』にまとめた。"},
+      {group:"人類と年代",q:"アフリカに現れ、約20万年前に登場した、現在の人類の直接の祖先とされる人類は？",a:"新人（ホモ・サピエンス）",note:"やがて世界中へ広がった。"},
+      {group:"人類と年代",q:"石を打ち欠いてつくった、旧石器時代に使われた道具は？",a:"打製石器",note:"みがいてつくる磨製石器と区別する。"},
+      {group:"人類と年代",q:"表面をみがいてつくった、新石器時代の石器は？",a:"磨製石器",note:"農耕の始まりとともに広まった。"},
+      {group:"人類と年代",q:"100年をひとまとまりとして年代を表す単位を何という？",a:"世紀",note:"例：2001〜2100年が21世紀。"}
+    ]
+  },
+  {
+    era:"縄文時代",
+    cards:[
+      {group:"縄文土器",q:"縄目のような文様がつけられた、縄文時代を代表する土器は？",a:"縄文土器",note:"低い温度で焼かれ、厚くてもろい。時代名の由来にもなった。"},
+      {group:"縄文土器",q:"縄文土器の特徴として、厚さやかたさはどうだった？",a:"厚くてもろい（低温で焼いた）",note:"弥生土器の「薄くてかたい」と対比して覚える。"},
+      {group:"くらし",q:"縄文時代の人々が住んだ、地面を掘り下げて柱を立て屋根をかけた住居は？",a:"竪穴住居",note:"むらをつくって定住するようになった。"},
+      {group:"くらし",q:"縄文時代の人々が食べ物を得ていた主な方法は？",a:"狩り・漁・採集",note:"まだ稲作は本格的でなく、自然の恵みにたよった。"},
+      {group:"くらし",q:"縄文時代、貝がらや食べ物の残りなどを捨てた場所が積もってできた遺跡を何という？",a:"貝塚",note:"当時の食生活を知る手がかりになる。"},
+      {group:"信仰",q:"縄文時代につくられた、まじないや豊かな実りへの祈りに使われたとされる土製の人形は？",a:"土偶",note:"女性をかたどったものが多い。"},
+      {group:"遺跡",q:"青森県にある、縄文時代の大規模な集落あとで知られる遺跡は？",a:"三内丸山遺跡",note:"大型の建物あとなどが見つかり、定住のようすがわかる。"}
+    ]
+  },
+  {
+    era:"弥生時代",
+    cards:[
+      {group:"稲作",q:"弥生時代に大陸から伝わり、人々の生活を大きく変えた農業は？",a:"稲作（米づくり）",note:"食料をたくわえられるようになり、むらやくにが生まれた。"},
+      {group:"稲作",q:"弥生時代、稲の穂をつみとるのに使われた道具は？",a:"石包丁",note:"石でつくられた収穫の道具。"},
+      {group:"稲作",q:"弥生時代、収穫した米をたくわえるためにつくられた、湿気やねずみを防ぐ倉庫は？",a:"高床倉庫",note:"床を高くして湿気やねずみを防いだ。"},
+      {group:"弥生土器",q:"うすくてかたく、赤褐色でかんたんな文様の、弥生時代を代表する土器は？",a:"弥生土器",note:"縄文土器より高い温度で焼かれ、うすくてかたい。"},
+      {group:"弥生土器",q:"弥生土器の特徴を、色・厚さの点でいうと？",a:"赤褐色で、うすくてかたい",note:"縄文土器の「厚くてもろい」と対比。"},
+      {group:"金属器",q:"弥生時代に大陸から伝わった、青銅器と鉄器をまとめて何という？",a:"金属器",note:"青銅器は主に祭りの道具、鉄器は主に工具・武器に使われた。"},
+      {group:"金属器",q:"弥生時代、主に祭りの道具として使われた金属器は？",a:"青銅器",note:"銅鐸（どうたく）などが代表。"},
+      {group:"遺跡",q:"静岡県にある、水田のあとが見つかった弥生時代の遺跡は？",a:"登呂遺跡",note:"稲作のようすを伝える。"},
+      {group:"遺跡",q:"佐賀県にある、周りを堀やさくで囲んだ、弥生時代の大規模な環濠集落の遺跡は？",a:"吉野ヶ里遺跡",note:"むら同士の争いがあったことをうかがわせる。"},
+      {group:"中国の歴史書",q:"紀元前1世紀ごろの日本について、倭人が100余りの小国（百余国）に分かれていたと記した、中国の歴史書は？",a:"漢書地理志",note:"前漢の歴史書。日本を伝える最も古い記録とされる。"},
+      {group:"中国の歴史書",q:"漢書地理志によれば、紀元前1世紀ごろの倭（日本）はどのような状態だったと記されている？",a:"100余りの小国（百余国）に分かれていた",note:"まだ統一されず、小国が分立していた。"},
+      {group:"中国の歴史書",q:"漢書地理志で、倭の小国が使いを送っていたとされる、漢が朝鮮半島に置いた拠点は？",a:"楽浪郡",note:"現在の平壌（ピョンヤン）あたりにあった漢の領土。"},
+      {group:"中国の歴史書",q:"1世紀に倭の奴国の王が漢（後漢）に使いを送り、皇帝から授けられたとされる金印には何と刻まれていた？",a:"漢委奴国王",note:"金印は江戸時代に志賀島（福岡県）で発見された。『後漢書』東夷伝に記述がある。"},
+      {group:"中国の歴史書",q:"奴国の王が金印を授かったことが記された、中国の歴史書は？",a:"後漢書東夷伝",note:"1世紀の日本のようすを伝える。"},
+      {group:"中国の歴史書",q:"3世紀の日本にあった、卑弥呼が治めた国の名は？",a:"邪馬台国",note:"『魏志』倭人伝に記されている。"},
+      {group:"中国の歴史書",q:"邪馬台国を治め、まじないによって政治を行ったとされる女王は？",a:"卑弥呼",note:"魏に使いを送り「親魏倭王」の称号を得たとされる。"},
+      {group:"中国の歴史書",q:"邪馬台国と卑弥呼のことが記された、中国の歴史書は？",a:"魏志倭人伝",note:"3世紀の日本のようすを伝える。"}
+    ]
+  },
+  {
+    era:"古墳時代",
+    cards:[
+      {group:"大和政権",q:"3世紀後半ごろ、奈良盆地を中心に、有力な豪族が連合してつくった政権は？",a:"大和政権（ヤマト王権）",note:"のちに国内の広い範囲を従えていった。"},
+      {group:"大和政権",q:"大和政権の王（リーダー）を指した呼び名は？",a:"大王（おおきみ）",note:"のちの「天皇」につながる。"},
+      {group:"大和政権",q:"古墳時代の終わりごろ、仏教の受け入れなどをめぐって力をのばした豪族は？",a:"蘇我氏",note:"のちの飛鳥時代の政治の中心になっていく。"},
+      {group:"古墳",q:"王や豪族をほうむるためにつくられた大きな墓を何という？",a:"古墳",note:"3世紀後半から各地につくられ、時代名の由来になった。"},
+      {group:"古墳",q:"円形と方形を組み合わせた形をした、規模の大きな古墳の形式は？",a:"前方後円墳",note:"大和政権とのつながりを示すとされる。"},
+      {group:"古墳",q:"大阪府堺市にある、世界最大級の面積をもつ前方後円墳は？",a:"大仙古墳（大山古墳・仁徳陵古墳）",note:"仁徳天皇の墓と伝えられる。"},
+      {group:"古墳",q:"古墳の頂上や周囲に置かれた、人・動物・家などをかたどった素焼きの土器は？",a:"はにわ（埴輪）",note:"当時の暮らしや風習を知る手がかりになる。"},
+      {group:"渡来人",q:"古墳時代、朝鮮半島などから日本に移り住み、進んだ技術や文化を伝えた人々を何という？",a:"渡来人",note:"須恵器・機織り・漢字・儒学などを伝えた。"},
+      {group:"渡来人",q:"渡来人が日本に伝えた、中国の文字は？",a:"漢字",note:"儒学や仏教とともに伝わり、記録に使われるようになった。"},
+      {group:"渡来人",q:"古墳時代、渡来人が伝えた技術でつくられるようになった、かたく黒っぽい土器は？",a:"須恵器",note:"のぼりがまで高温で焼いた。それまでの土師器よりかたい。"},
+      {group:"氏姓制度",q:"ヤマト政権が、豪族を血縁などで組織し、地位に応じた称号を与えて支配した仕組みを何という？",a:"氏姓制度",note:"5〜6世紀にかけて整えられた。"},
+      {group:"氏姓制度",q:"氏姓制度で、豪族が血縁を中心にまとまった組織を何という？",a:"氏（うじ）",note:"蘇我氏・物部氏などがその例。"},
+      {group:"氏姓制度",q:"氏姓制度で、大王が豪族に与えた、地位や役割を示す称号を何という？",a:"姓（かばね）",note:"臣（おみ）・連（むらじ）などがあった。"},
+      {group:"朝鮮半島",q:"4〜5世紀ごろ、朝鮮半島北部にあり、倭とたびたび戦った国は？",a:"高句麗",note:"好太王碑（広開土王碑）に倭との戦いが記されている。"},
+      {group:"朝鮮半島",q:"朝鮮半島南西部にあり、倭と友好的で、多くの渡来人や仏教を伝えた国は？",a:"百済",note:"6世紀に日本へ仏教を伝えたとされる。"},
+      {group:"朝鮮半島",q:"朝鮮半島南東部にあり、のちに半島を統一する国は？",a:"新羅",note:"はじめは小国だったが力をのばした。"},
+      {group:"朝鮮半島",q:"朝鮮半島南部にあり、倭が交流の拠点としていた小国の連合は？",a:"伽耶（加耶・任那）",note:"鉄資源などを求めて倭が関わりを持った。"},
+      {group:"ワカタケル大王",q:"埼玉県の稲荷山古墳の鉄剣と、熊本県の江田船山古墳の鉄刀に名が刻まれていた大王は？",a:"ワカタケル大王",note:"倭の五王の「武」＝雄略天皇にあたるとされる。"},
+      {group:"ワカタケル大王",q:"「ワカタケル大王」の名が刻まれた鉄剣が出土した、埼玉県の古墳は？",a:"稲荷山古墳",note:"熊本県の江田船山古墳の鉄刀にも同じ大王の名がある。"},
+      {group:"ワカタケル大王",q:"稲荷山古墳（埼玉）と江田船山古墳（熊本）の両方から同じ大王の名が出たことから、何が分かる？",a:"大和政権の勢力が関東から九州まで及んでいたこと",note:"ワカタケル大王の影響力の広さを示す。"},
+      {group:"ワカタケル大王",q:"5世紀、中国の南朝に使いを送ったことが「宋書」倭国伝に記された、5人の倭の王を何という？",a:"倭の五王",note:"讃・珍・済・興・武の5人。武がワカタケル大王とされる。"},
+    ]
+  },
+  {
+    era:"飛鳥時代",
+    cards:[
+      {group:"聖徳太子",q:"6世紀末〜7世紀初め、推古天皇の摂政として、天皇中心の政治をめざした人物は？",a:"聖徳太子（厩戸皇子）",note:"蘇我氏と協力して政治を進めた。"},
+      {group:"聖徳太子",q:"聖徳太子が摂政として補佐した、日本で初めての女性天皇は？",a:"推古天皇",note:"聖徳太子・蘇我馬子とともに政治を行った。"},
+      {group:"聖徳太子",q:"聖徳太子が就いた、天皇が女性や幼いときなどに天皇を補佐して政治を行う役職を何という？",a:"摂政",note:"のちに藤原氏がこの職について力をふるう。"},
+      {group:"聖徳太子",q:"聖徳太子が定めた、家がらにとらわれず能力や功績で役人を取り立てる制度は？",a:"冠位十二階",note:"役人の地位を12段階に分けた。"},
+      {group:"聖徳太子",q:"冠位十二階は、何のために定められた制度？",a:"家がらでなく能力で役人を選ぶため",note:"それまでの豪族中心の登用を改めようとした。"},
+      {group:"聖徳太子",q:"聖徳太子が定めた、役人の心構えを示した決まりは？",a:"十七条の憲法",note:"「和を大切に」など、天皇に従うべきことなどを示した。"},
+      {group:"聖徳太子",q:"聖徳太子が、進んだ制度や文化を取り入れるため中国（隋）に送った使いは？",a:"遣隋使",note:"小野妹子らが送られた。"},
+      {group:"聖徳太子",q:"遣隋使として隋に派遣された人物として知られるのは？",a:"小野妹子",note:"対等な外交をめざした国書を持参したとされる。"},
+      {group:"飛鳥文化",q:"聖徳太子が建てたと伝えられる、現存する世界最古の木造建築として知られる寺は？",a:"法隆寺",note:"飛鳥文化を代表する。仏教文化が花開いた。"},
+      {group:"大化の改新",q:"645年、蘇我氏をたおして天皇中心の政治をめざした政治改革を何という？",a:"大化の改新",note:"中大兄皇子と中臣鎌足が中心となった。"},
+      {group:"大化の改新",q:"大化の改新の中心となった、のちの天智天皇となる皇子は？",a:"中大兄皇子",note:"中臣鎌足とともに蘇我氏をたおした。"},
+      {group:"大化の改新",q:"中大兄皇子とともに大化の改新を進め、のちに藤原の姓を与えられた人物は？",a:"中臣鎌足",note:"のちの藤原氏の祖。"},
+      {group:"大化の改新",q:"大化の改新で示された、土地と人民をすべて国（天皇）のものとする方針は？",a:"公地公民",note:"豪族が支配していた土地・人民を国のものとした。"},
+      {group:"大化の改新",q:"大化の改新は、何のために行われた改革？",a:"豪族中心の政治を改め、天皇中心の政治にするため",note:"力を持ちすぎた蘇我氏をたおした。"},
+      {group:"白村江の戦い",q:"663年、日本が百済を助けるために出兵し、唐・新羅の連合軍に敗れた戦いは？",a:"白村江の戦い",note:"この敗戦で、唐・新羅の攻撃に備える必要が生まれた。"},
+      {group:"白村江の戦い",q:"白村江の戦いのあと、九州北部に置かれ、外交や防衛の窓口となった役所は？",a:"大宰府",note:"外国からの攻撃や外交に備える拠点となった。"},
+      {group:"白村江の戦い",q:"白村江の戦いのあと、大宰府を守るために築かれた、堤と堀からなる防御施設は？",a:"水城",note:"唐・新羅の侵攻に備えた。"},
+      {group:"律令国家への歩み",q:"中大兄皇子が即位してなった天皇は？",a:"天智天皇",note:"白村江の敗戦後、国内の政治改革と国防を進めた。"},
+      {group:"律令国家への歩み",q:"天智天皇の死後の672年、皇位をめぐって起こった、古代最大の内乱は？",a:"壬申の乱",note:"天智天皇の弟・大海人皇子と、子・大友皇子が争った。"},
+      {group:"律令国家への歩み",q:"壬申の乱に勝って即位し、天皇中心の政治を強力に進めた天皇は？",a:"天武天皇",note:"もとは大海人皇子。天皇の権力を強めた。"},
+      {group:"律令国家への歩み",q:"日本で最初の銅銭とされる、天武天皇のころにつくられた貨幣は？",a:"富本銭",note:"のちの和同開珎より古いとされる。"},
+      {group:"律令国家への歩み",q:"天武天皇の路線を受けつぎ、694年に本格的な都・藤原京に移した天皇は？",a:"持統天皇",note:"天武天皇の皇后で、律令国家の整備を進めた。"},
+      {group:"律令国家への歩み",q:"持統天皇が694年に移した、律令国家の本格的な都は？",a:"藤原京",note:"のちに平城京へ移るまでの都。"}
+    ]
+  },
+  {
+    era:"奈良時代",
+    cards:[
+      {group:"平城京",q:"710年、唐の都・長安にならって奈良につくられた都は？",a:"平城京",note:"藤原京から移された。奈良時代の始まり。"},
+      {group:"平城京",q:"平城京に都を移した（710年）ときの天皇は？",a:"元明天皇",note:"聖武天皇と混同しないよう注意。"},
+      {group:"平城京",q:"奈良時代、平城京で使われた、和同開珎などの貨幣のうち有名なものは？",a:"和同開珎",note:"唐にならって発行された。"},
+      {group:"律令",q:"701年に完成し、律（刑罰）と令（政治のきまり）からなる、律令国家の基礎となった法律は？",a:"大宝律令",note:"唐の律令にならった。全国を統一的に治める仕組み。"},
+      {group:"律令",q:"律令にもとづき、戸籍に登録された人々に口分田を割りあて、死ぬと返させた土地制度は？",a:"班田収授法",note:"人々に土地を貸し与えるかわりに税を負担させた。"},
+      {group:"律令",q:"班田収授法で、6歳以上の人々に割りあてられ、死ぬと国に返した土地を何という？",a:"口分田",note:"人口が増えると不足し、のちの墾田永年私財法につながった。"},
+      {group:"律令",q:"大宝律令にもとづく中央の政治のしくみで、二官（神祇官・太政官）の下に置かれた8つの役所をまとめて何という？",a:"八省",note:"二官八省とよばれる中央の仕組み。"},
+      {group:"律令",q:"律令のもとで、中央から地方の国に派遣され、その国を治めた役人は？",a:"国司",note:"都から派遣された貴族が任じられた。"},
+      {group:"律令",q:"律令のもとで、国司の下でその地方の実務にあたった、地元の豪族出身の役人は？",a:"郡司",note:"もとの国造など、地方の有力者が任じられた。"},
+      {group:"税",q:"奈良時代の税のうち、収穫した稲の一部を納めるものは？",a:"租",note:"租・庸・調の1つ。稲を納める税。"},
+      {group:"税",q:"奈良時代の税のうち、都での労役の代わりに布を納めるものは？",a:"庸",note:"租・庸・調の1つ。"},
+      {group:"税",q:"奈良時代の税のうち、地方の特産物を納めるものは？",a:"調",note:"租・庸・調の1つ。特産物を納める。"},
+      {group:"税",q:"奈良時代、北九州の防備のために送られた兵士を何という？",a:"防人（さきもり）",note:"重い負担で、農民を苦しめた。万葉集にその歌が残る。"},
+      {group:"土地制度",q:"743年、開墾した土地を永久に自分のものにしてよいと認めた法律は？",a:"墾田永年私財法",note:"これにより有力者が私有地を広げ、のちの荘園につながった。"},
+      {group:"土地制度",q:"墾田永年私財法などをきっかけに、貴族や寺社が広げていった私有地を何という？",a:"荘園",note:"公地公民のしくみがくずれていく原因になった。"},
+      {group:"仏教",q:"仏教の力で国家を守ろうとして、東大寺や大仏をつくった奈良時代の天皇は？",a:"聖武天皇",note:"飛鳥時代の聖徳太子と混同しないよう注意。"},
+      {group:"仏教",q:"聖武天皇が、仏教で国を守ろうとして都（奈良）に建てた寺は？",a:"東大寺",note:"大仏がつくられた。総国分寺とされた。"},
+      {group:"仏教",q:"聖武天皇が、国ごとに建てさせた寺を何という？",a:"国分寺（と国分尼寺）",note:"都の東大寺を中心に、各地に置かれた。"},
+      {group:"仏教",q:"橋や用水路をつくるなど、民間で人々のために布教した奈良時代の僧は？",a:"行基",note:"のちに大仏づくりにも協力した。"},
+      {group:"仏教",q:"盲目になりながらも日本へ渡り、正しい仏教の教えを伝えた唐の僧は？",a:"鑑真",note:"唐招提寺を開いた。"},
+      {group:"天平文化",q:"奈良時代に栄えた、遣唐使を通じて唐や西方の影響を受けた国際的な文化を何という？",a:"天平文化",note:"仏教と唐の文化が結びついた。"},
+      {group:"天平文化",q:"東大寺にある、聖武天皇の遺品などを納めた、校倉造で知られる宝物庫は？",a:"正倉院",note:"シルクロードを通じて伝わった国際的な宝物が納められている。"},
+      {group:"天平文化",q:"正倉院に用いられた、木材を三角形に組み上げてかべをつくる建築様式は？",a:"校倉造（あぜくらづくり）",note:"湿気を防ぎ、宝物の保存に役立ったとされる。"},
+      {group:"天平文化",q:"奈良時代、天皇の命令で各地の産物・地名の由来・伝承などをまとめさせた地理書は？",a:"風土記",note:"地方の様子を国ごとに記録させた。"},
+      {group:"天平文化",q:"奈良時代につくられた、天皇の命令による日本最古の歴史書2つは？",a:"古事記・日本書紀",note:"国のなりたちをまとめた。"},
+      {group:"天平文化",q:"奈良時代につくられた、天皇や貴族から農民・防人までの歌を集めた歌集は？",a:"万葉集",note:"約4500首を収める。防人の歌なども含む。"},
+      {group:"外交",q:"奈良時代、唐の進んだ制度や文化を学ぶために送られた使節を何という？",a:"遣唐使",note:"多くの危険をおかして渡り、文化を持ち帰った。"}
+    ]
+  },
+  {
+    era:"平安時代",
+    cards:[
+      {group:"平安京",q:"794年に都を平安京（現在の京都市）に移した天皇は？",a:"桓武天皇",note:"仏教勢力の政治介入をきらい、奈良から都を移したとされる。"},
+      {group:"平安京",q:"桓武天皇が794年に移した、現在の京都市にあたる都は？",a:"平安京",note:"これ以後、約1100年にわたり京都が都となった。"},
+      {group:"平安京",q:"桓武天皇が、東北地方の蝦夷を平定するために征夷大将軍に任命した人物は？",a:"坂上田村麻呂",note:"蝦夷のリーダー・アテルイと戦った。"},
+      {group:"平安京",q:"蝦夷を征伐するための総大将として、坂上田村麻呂が任じられた役職は？",a:"征夷大将軍",note:"のちに武士の政権（幕府）の長を指す語になる。"},
+      {group:"新しい仏教",q:"平安時代初め、唐にわたって天台宗を伝え、比叡山に延暦寺を開いた僧は？",a:"最澄",note:"空海と混同しないよう注意。"},
+      {group:"新しい仏教",q:"最澄が開いた仏教の宗派と、その中心の寺は？",a:"天台宗・比叡山延暦寺",note:"滋賀県の比叡山にある。"},
+      {group:"新しい仏教",q:"平安時代初め、唐にわたって真言宗を伝え、高野山に金剛峯寺を開いた僧は？",a:"空海",note:"最澄と混同しないよう注意。"},
+      {group:"新しい仏教",q:"空海が開いた仏教の宗派と、その中心の寺は？",a:"真言宗・高野山金剛峯寺",note:"和歌山県の高野山にある。"},
+      {group:"摂関政治",q:"藤原氏が、娘を天皇のきさきにし、その子を天皇に立てて実権をにぎった政治を何という？",a:"摂関政治",note:"天皇が幼いときは摂政、成人後は関白の職について政治を動かした。"},
+      {group:"摂関政治",q:"摂関政治で、天皇が成人したのちにその政治を補佐した役職は？",a:"関白",note:"幼いときを補佐するのが摂政。"},
+      {group:"摂関政治",q:"摂関政治の全盛期を築き、「この世をば わが世とぞ思ふ…」の歌でも知られる人物は？",a:"藤原道長",note:"娘を次々と天皇のきさきにして権力をふるった。"},
+      {group:"摂関政治",q:"藤原道長の子で、摂関政治を受けつぎ、宇治に平等院鳳凰堂を建てた人物は？",a:"藤原頼通",note:"道長―頼通の時期が摂関政治の全盛。"},
+      {group:"国風文化",q:"894年、菅原道真の提案で停止された、唐への使節は？",a:"遣唐使",note:"これをきっかけに、日本独自の国風文化が育った。"},
+      {group:"国風文化",q:"894年、遣唐使の停止を提案した人物は？",a:"菅原道真",note:"のちに大宰府に左遷された。学問の神としてもまつられる。"},
+      {group:"国風文化",q:"遣唐使の停止後、唐の影響がうすれて生まれた、日本の風土や生活に合った文化を何という？",a:"国風文化",note:"かな文字や、貴族の暮らしを描いた文学が花開いた。"},
+      {group:"国風文化",q:"漢字をもとにして日本で作られた、日本語の音を書き表す文字を何という？",a:"かな文字（仮名）",note:"これにより、感情をこまやかに表す文学が発達した。"},
+      {group:"国風文化",q:"かな文字を使って『源氏物語』を書いた女性は？",a:"紫式部",note:"貴族社会をえがいた長編物語。"},
+      {group:"国風文化",q:"かな文字を使って随筆『枕草子』を書いた女性は？",a:"清少納言",note:"紫式部と混同しないよう注意。"},
+      {group:"国風文化",q:"天皇の命令で『古今和歌集』をまとめ、かな文字による『土佐日記』を書いた人物は？",a:"紀貫之",note:"かな文字の発達を代表する歌人。"},
+      {group:"国風文化",q:"念仏を唱えて阿弥陀仏にすがり、死後に極楽浄土へ生まれ変わることを願う信仰を何という？",a:"浄土信仰（浄土の教え）",note:"藤原頼通の平等院鳳凰堂もこの信仰から生まれた。"},
+      {group:"国風文化",q:"国風文化のころ、貴族の住まいとして発達した、庭や池をそなえた日本風の建築様式は？",a:"寝殿造",note:"貴族のやしきの様式。"},
+      {group:"国風文化",q:"国風文化のころ生まれた、日本の風景や人物を描いた日本風の絵を何という？",a:"大和絵",note:"のちの絵巻物などに受けつがれた。"},
+      {group:"国風文化",q:"藤原頼通が、極楽浄土をこの世に表そうとして宇治に建てた、国風文化を代表する建物は？",a:"平等院鳳凰堂",note:"10円玉にえがかれていることでも知られる。"},
+      {group:"院政と武士",q:"11世紀後半、天皇の位をゆずって上皇となったのちも政治を行うようになった政治のしくみを何という？",a:"院政",note:"白河上皇が始めた。摂関政治にかわって上皇が力をにぎった。"},
+      {group:"院政と武士",q:"1086年に院政を始めた上皇は？",a:"白河上皇",note:"藤原氏をおさえて上皇が実権をにぎった。"},
+      {group:"武士の登場",q:"10世紀ごろ、都の警備や地方の反乱の鎮圧で活躍し、成長していった、戦いを専門とする者たちを何という？",a:"武士",note:"地方の有力者などが武装して生まれた。"},
+      {group:"武士の登場",q:"武士が、一族や家来をまとめて形づくった集団を何という？",a:"武士団",note:"やがて源氏・平氏という大きなまとまりに成長した。"},
+      {group:"武士の登場",q:"935年ごろ、関東で反乱を起こし「新皇」を名乗った武士は？",a:"平将門",note:"武士の力で鎮圧された。武士の成長を示すできごと。"},
+      {group:"武士の登場",q:"939年ごろ、瀬戸内海の海賊を率いて反乱を起こした武士は？",a:"藤原純友",note:"平将門の乱とほぼ同時期。あわせて武士の力を示した。"},
+      {group:"武士の登場",q:"11世紀後半、東北地方で起きた2つの戦乱で、これらを通じて源氏が東国に勢力を広げた。この2つの戦乱は？",a:"前九年合戦・後三年合戦",note:"源義家らが活躍した。"},
+      {group:"武士の登場",q:"前九年・後三年合戦ののち、東北地方で力をもち、平泉を拠点に栄えた一族は？",a:"奥州藤原氏",note:"金や馬などの富を背景に栄えた。"},
+      {group:"武士の登場",q:"奥州藤原氏が拠点とした、東北地方（岩手県）の都市は？",a:"平泉",note:"中尊寺金色堂などが築かれた。"},
+      {group:"武士の登場",q:"奥州藤原氏が平泉に築いた、金でかざられた阿弥陀堂は？",a:"中尊寺金色堂",note:"浄土信仰にもとづく建物。"},
+      {group:"平氏の政治",q:"1156年と1159年に都で起こり、武士が政治の中心に進出するきっかけとなった2つの乱は？",a:"保元の乱・平治の乱",note:"これらに勝った平清盛が力をのばした。"},
+      {group:"平氏の政治",q:"武士として初めて太政大臣となり、政治の実権をにぎった平氏の人物は？",a:"平清盛",note:"保元の乱・平治の乱を経て力をのばした。"},
+      {group:"平氏の政治",q:"平清盛が武士として初めてついた、朝廷の最高の役職は？",a:"太政大臣",note:"それまで貴族しかつけなかった地位。"},
+      {group:"平氏の政治",q:"平清盛があつく敬い、一族の守り神としてまつった、広島県の海上の神社は？",a:"厳島神社",note:"海に立つ鳥居で知られる。"},
+      {group:"平氏の政治",q:"平清盛が、兵庫の港（大輪田泊）を整えて力を入れた、中国の宋との貿易を何という？",a:"日宋貿易",note:"貿易の利益が平氏の経済力を支えた。"}
+    ]
+  },
+  {
+    era:"鎌倉時代",
+    cards:[
+      {group:"幕府の成立",q:"平氏をほろぼし、1192年に征夷大将軍となって鎌倉幕府を開いた武士は？",a:"源頼朝",note:"武士が政治の中心となる時代を開いた。"},
+      {group:"幕府の成立",q:"源頼朝が開いた、日本で初めての本格的な武士の政権を何という？",a:"鎌倉幕府",note:"神奈川県の鎌倉に置かれた。"},
+      {group:"幕府の成立",q:"1185年、源頼朝が国ごと・荘園ごとに置いた役人は、それぞれ何という？",a:"守護・地頭",note:"守護は国ごと（軍事・警察）、地頭は荘園ごと（年貢の取り立て）。"},
+      {group:"幕府の成立",q:"国ごとに置かれ、軍事や警察の役割を担った役人は？",a:"守護",note:"地頭と区別して覚える。"},
+      {group:"幕府の成立",q:"荘園や公領ごとに置かれ、年貢の取り立てや土地の管理を担った役人は？",a:"地頭",note:"守護と区別して覚える。"},
+      {group:"御恩と奉公",q:"将軍と、従う武士（御家人）が、領地を仲立ちに結んだ主従関係のうち、将軍が御家人の領地を保護することを何という？",a:"御恩",note:"御家人が戦う「奉公」と対になる。"},
+      {group:"御恩と奉公",q:"御家人が、将軍のために戦いに参加するなど、義務を果たすことを何という？",a:"奉公",note:"将軍が領地を保障する「御恩」と対になる。"},
+      {group:"御恩と奉公",q:"将軍と主従関係を結び、御恩と奉公でつながった武士を何という？",a:"御家人",note:"いざ鎌倉のときには将軍のために戦った。"},
+      {group:"執権政治",q:"源氏の将軍がとだえたのち、北条氏が独占して幕府の実権をにぎった役職は？",a:"執権",note:"将軍を補佐する立場から実権をにぎった（執権政治）。"},
+      {group:"執権政治",q:"執権の職を代々独占して幕府の実権をにぎった一族は？",a:"北条氏",note:"初代執権は北条時政。"},
+      {group:"執権政治",q:"源頼朝の妻で、承久の乱のときに御家人をまとめ「尼将軍」とよばれた人物は？",a:"北条政子",note:"御家人に頼朝の御恩を説いて団結させた。"},
+      {group:"承久の乱",q:"1221年、朝廷に力を取りもどそうとして鎌倉幕府をたおそうと兵を挙げた上皇は？",a:"後鳥羽上皇",note:"この反乱が承久の乱。幕府に敗れ隠岐へ流された。"},
+      {group:"承久の乱",q:"1221年、後鳥羽上皇が幕府をたおそうとして起こした反乱を何という？",a:"承久の乱",note:"幕府側が勝ち、幕府の支配が全国に広がった。"},
+      {group:"承久の乱",q:"承久の乱のあと、朝廷を監視するために京都に置かれた役所は？",a:"六波羅探題",note:"西日本の武士の統制も担った。"},
+      {group:"御成敗式目",q:"1232年、執権の北条泰時が定めた、武家社会で初めての本格的な法律は？",a:"御成敗式目（貞永式目）",note:"御家人に裁判の基準を示した。のちの武家法の手本になった。"},
+      {group:"御成敗式目",q:"御成敗式目を定めた執権は？",a:"北条泰時",note:"承久の乱のあと、政治の安定をはかった。"},
+      {group:"元寇",q:"13世紀、フビライ＝ハンが率いる元の大軍が、二度にわたって日本にせめてきたできごとをまとめて何という？",a:"元寇",note:"1274年の文永の役と、1281年の弘安の役。"},
+      {group:"元寇",q:"1274年、元が最初に日本にせめてきた戦いを何という？",a:"文永の役",note:"集団戦法や火薬の武器に御家人は苦しんだ。"},
+      {group:"元寇",q:"1281年、元が二度目に日本にせめてきた戦いを何という？",a:"弘安の役",note:"暴風雨もあって元軍は引き上げた。"},
+      {group:"元寇",q:"元寇のとき、元を建国し日本に服属を求めてきた皇帝は？",a:"フビライ＝ハン",note:"モンゴル帝国を受けつぎ、国号を元とした。"},
+      {group:"元寇",q:"元寇のあと、恩賞をもらえず生活が苦しくなった御家人を救うため、1297年に幕府が出した借金帳消しの命令は？",a:"（永仁の）徳政令",note:"効果は一時的で、かえって幕府への不満が高まった。"},
+      {group:"鎌倉仏教",q:"念仏「南無阿弥陀仏」を唱えれば救われると説き、浄土宗を開いた僧は？",a:"法然",note:"わかりやすい教えで庶民に広まった。"},
+      {group:"鎌倉仏教",q:"法然の教えをさらに進め、浄土真宗（一向宗）を開いた僧は？",a:"親鸞",note:"悪人こそ救われるという教え（悪人正機）で知られる。"},
+      {group:"鎌倉仏教",q:"踊りながら念仏を広め、時宗を開いた僧は？",a:"一遍",note:"踊念仏で各地を回った。"},
+      {group:"鎌倉仏教",q:"題目「南無妙法蓮華経」を唱えることを説き、日蓮宗（法華宗）を開いた僧は？",a:"日蓮",note:"他宗を強く批判し、迫害も受けた。"},
+      {group:"鎌倉仏教",q:"座禅によってさとりを開く禅宗のうち、臨済宗を宋から伝えた僧は？",a:"栄西",note:"武士に好まれた。曹洞宗の道元と区別する。"},
+      {group:"鎌倉仏教",q:"座禅によってさとりを開く禅宗のうち、曹洞宗を宋から伝えた僧は？",a:"道元",note:"ひたすら座禅を組むことを重んじた。臨済宗の栄西と区別する。"},
+      {group:"鎌倉文化",q:"東大寺南大門に置かれた、運慶・快慶らがつくった力強い彫刻は？",a:"金剛力士像",note:"写実的で力強い鎌倉文化を代表する。"},
+      {group:"鎌倉文化",q:"金剛力士像をつくった代表的な仏師2人は？",a:"運慶・快慶",note:"東大寺南大門の像で知られる。"},
+      {group:"鎌倉文化",q:"平氏の栄えとほろびを描き、琵琶法師が語り広めた軍記物は？",a:"平家物語",note:"「祇園精舎の鐘の声…」で始まる。"},
+      {group:"鎌倉文化",q:"後鳥羽上皇の命令で藤原定家らがまとめた和歌集は？",a:"新古今和歌集",note:"技巧をこらした歌が多い。"},
+      {group:"鎌倉文化",q:"兼好法師が書いた、鎌倉時代の代表的な随筆は？",a:"徒然草",note:"「つれづれなるままに…」で始まる。"},
+      {group:"鎌倉の社会",q:"鎌倉時代、同じ田畑で米と麦を交互につくるようになった農業のくふうを何という？",a:"二毛作",note:"農業生産が高まった。"},
+      {group:"鎌倉の社会",q:"鎌倉時代、寺社の門前などで月に数回開かれた市を何という？",a:"定期市",note:"商業や貨幣経済の発達を示す。"}
+    ]
+  }
+];
+
+let state = { eraIndex:0, mode:"random", queue:[], pos:0, correct:0, flipped:false, missedByEra:{} };
+const $ = s => document.querySelector(s);
+const DRAW = 10;
+
+// 今選んでいる時代の「間違えた問題」配列を取り出す（なければ作る）
+function curMissed(){
+  const era = ERAS[state.eraIndex].era;
+  if(!state.missedByEra[era]) state.missedByEra[era] = [];
+  return state.missedByEra[era];
+}
+
+function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function renderEras(){
+  const box=$("#eras"); box.innerHTML="";
+  ERAS.forEach((e,i)=>{
+    const b=document.createElement("button");
+    b.className="era-btn"+(state.eraIndex===i?" active":"");
+    b.innerHTML=`${e.era}<span class="cnt">${e.cards.length}</span>`;
+    b.onclick=()=>{
+      state.eraIndex=i;
+      if(state.mode==="list"){ showList(); }
+      else { start(state.mode==="review"?"random":state.mode); }
+    };
+    box.appendChild(b);
+  });
+}
+
+function renderModes(){
+  const box=$("#modes"); box.innerHTML="";
+  const cur=ERAS[state.eraIndex];
+  const defs=[
+    {key:"random",label:`ランダム${DRAW}問`},
+    {key:"all",label:`全問（${cur.cards.length}問）`},
+    {key:"list",label:"一覧で見る"}
+  ];
+  defs.forEach(d=>{
+    const b=document.createElement("button");
+    b.className="mode-btn"+(state.mode===d.key?" active":"");
+    b.textContent=d.label;
+    b.onclick=()=> d.key==="list" ? showList() : start(d.key);
+    box.appendChild(b);
+  });
+  const n=curMissed().length;
+  const r=document.createElement("button");
+  r.className="mode-btn review-btn"+(n?" has":"")+(state.mode==="review"?" active":"");
+  r.innerHTML=`間違えた問題<span class="cnt">${n}</span>`;
+  r.onclick=()=>{if(n)startReview();};
+  box.appendChild(r);
+}
+
+function start(mode){
+  state.mode=mode;
+  const cur=ERAS[state.eraIndex];
+  let cards=shuffle(cur.cards);
+  if(mode==="random") cards=cards.slice(0,Math.min(DRAW,cur.cards.length));
+  state.queue=cards.map(c=>({...c, era:cur.era}));
+  begin((mode==="random"?`ランダム${state.queue.length}問`:"全問")+`｜${cur.era}`);
+}
+
+function startReview(){
+  state.mode="review";
+  const cur=ERAS[state.eraIndex];
+  state.queue=shuffle(curMissed().map(m=>({...m})));
+  begin(`間違えた問題の解き直し｜${cur.era}`);
+}
+
+/* 一覧表示：その時代の全カードを、グループごとに問題文＋答えで並べる */
+function showList(){
+  state.mode="list";
+  const cur=ERAS[state.eraIndex];
+  $("#modeLabel").textContent="一覧｜"+cur.era;
+  $("#progress").textContent=`${cur.cards.length}問`;
+  $("#barFill").style.width="100%";
+  renderEras(); renderModes();
+
+  // グループごとにまとめる（データの並び順を保つ）
+  const groups=[];
+  const map={};
+  cur.cards.forEach(c=>{
+    const g=c.group||"その他";
+    if(!map[g]){ map[g]={name:g,items:[]}; groups.push(map[g]); }
+    map[g].items.push(c);
+  });
+
+  let html='<div class="list-wrap">';
+  groups.forEach(g=>{
+    html+=`<div class="list-group"><div class="list-group-head">${g.name}</div>`;
+    g.items.forEach(c=>{
+      html+=`<div class="list-item"><div class="list-q">${c.q}</div><div class="list-a">${c.a}</div></div>`;
+    });
+    html+='</div>';
+  });
+  html+=`<div class="list-count">全 ${cur.cards.length} 問</div></div>`;
+  $("#main").innerHTML=html;
+}
+
+function begin(label){
+  state.pos=0;state.correct=0;state.flipped=false;
+  $("#modeLabel").textContent=label;
+  renderEras(); renderModes(); renderCard();
+}
+
+function renderCard(){
+  const total=state.queue.length;
+  const c=state.queue[state.pos];
+  $("#progress").textContent=`${state.pos+1} / ${total}`;
+  $("#barFill").style.width=((state.pos)/total*100)+"%";
+  $("#main").innerHTML=`
+    <div class="stage">
+      <div class="card" id="card">
+        <div class="face front">
+          <div class="eyebrow">${c.era||""}${c.group?" · "+c.group:""}</div>
+          <div class="body"><div class="q-text">${c.q}</div></div>
+          <div class="hint-flip">タップで答えを見る</div>
+        </div>
+        <div class="face back">
+          <div class="eyebrow">こたえ</div>
+          <div class="body"><div class="a-text">${c.a}</div></div>
+          ${c.note?`<div class="note">${c.note}</div>`:""}
+        </div>
+      </div>
+    </div>
+    <div class="judge">
+      <button class="miss" id="btnMiss" disabled>まだ覚えてない</button>
+      <button class="ok" id="btnOk" disabled>覚えた</button>
+    </div>`;
+  state.flipped=false;
+  const card=$("#card");
+  card.onclick=()=>{
+    state.flipped=!state.flipped;
+    card.classList.toggle("flip",state.flipped);
+    $("#btnMiss").disabled=!state.flipped;
+    $("#btnOk").disabled=!state.flipped;
+  };
+  $("#btnMiss").onclick=()=>judge(false,c);
+  $("#btnOk").onclick=()=>judge(true,c);
+}
+
+function judge(ok,card){
+  // このカードが属する時代の「間違い箱」を取得
+  const era = card.era || ERAS[state.eraIndex].era;
+  if(!state.missedByEra[era]) state.missedByEra[era] = [];
+  const box = state.missedByEra[era];
+  if(ok){
+    state.correct++;
+    // 解き直しで正解できたら、その時代の箱から取り除く
+    if(state.mode==="review"){
+      state.missedByEra[era] = box.filter(m=>!(m.a===card.a && m.q===card.q));
+    }
+  }else{
+    // 間違えた問題を、その時代の箱に記録（同じ問題は重複させない）
+    if(!box.some(m=>m.a===card.a && m.q===card.q)){
+      box.push({...card});
+    }
+  }
+  // 「間違えた問題」ボタンのカウント表示をその場で更新する
+  renderModes();
+  state.pos++;
+  if(state.pos>=state.queue.length) finish(); else renderCard();
+}
+
+function finish(){
+  $("#barFill").style.width="100%";
+  $("#progress").textContent="完了";
+  const total=state.queue.length;
+  const pct=Math.round(state.correct/total*100);
+  const cur=ERAS[state.eraIndex];
+  const missNow=curMissed().length;
+  $("#main").innerHTML=`
+    <div class="done">
+      <h2>おつかれさま！</h2>
+      <div class="score">${state.correct} / ${total}</div>
+      <p>正解率 ${pct}%${missNow?` ・ ${cur.era}の解き直し待ち ${missNow}問`:" ・ この時代はクリア！"}</p>
+      <div>
+        ${missNow?`<button onclick="startReview()">間違えた問題を解き直す</button>`:""}
+        <button onclick="start('random')">もう一度ランダム10問</button>
+        <button class="secondary" onclick="renderModes()">モードを選び直す</button>
+      </div>
+    </div>`;
+  renderModes();
+}
+
+renderEras();
+renderModes();
+start("random");
+</script>
+</body>
+</html>
