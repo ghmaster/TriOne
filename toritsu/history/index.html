@@ -18,21 +18,115 @@
     font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",system-ui,sans-serif;
     -webkit-font-smoothing:antialiased;line-height:1.6;min-height:100%;
   }
-  .wrap{max-width:640px;margin:0 auto;padding:24px 18px 80px}
+  .wrap{max-width:900px;margin:0 auto;padding:24px 28px 80px}
+  /* 背景に舞う桜（全画面の最背面・操作を邪魔しない） */
+  #sakura{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+  #homeScreen,#historyApp,#soonScreen{position:relative;z-index:1}
+  /* 起動スプラッシュ：黒背景に金色のアプリ名 */
+  #splash{position:fixed;inset:0;z-index:100;background:var(--bg);
+    display:flex;align-items:center;justify-content:center;
+    opacity:1;cursor:pointer}
+  #splash.out{animation:splashOut .6s ease-in forwards}
+  #splashTitle{color:var(--accent);font-size:clamp(38px,9vw,84px);font-weight:700;
+    letter-spacing:.22em;padding-left:.22em;
+    opacity:0;animation:titleIn 1.4s ease-out .8s forwards}
+  @keyframes titleIn{ from{opacity:0} to{opacity:1} }
+  @keyframes splashOut{ from{opacity:1} to{opacity:0} }
+  @keyframes fadeInUp{
+    from{opacity:0;transform:translateY(8px)}
+    to{opacity:1;transform:translateY(0)}
+  }
+  #main>*{animation:fadeInUp .32s ease-out}
+  #main{flex:1;overflow-y:auto;min-height:0;padding-bottom:60px}
+  #historyApp{height:100vh;flex-direction:column;justify-content:flex-start;padding-top:24px;padding-bottom:0;overflow:hidden}
   header{margin:8px 2px 20px}
   .brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
   .brand h1{font-size:22px;letter-spacing:.06em;font-weight:700}
   .brand .tag{font-size:11px;color:var(--accent);letter-spacing:.16em;border:1px solid var(--line);padding:3px 8px;border-radius:999px}
   .lead{color:var(--sub);font-size:13px;margin-top:6px}
 
-  .section-label{font-size:11px;color:var(--sub);letter-spacing:.12em;margin:18px 2px 8px}
-  .eras{display:flex;flex-wrap:wrap;gap:8px}
+  .section-label{font-size:14px;color:var(--sub);letter-spacing:.12em;margin:20px 2px 10px}
+  .eras{display:flex;flex-wrap:wrap;gap:10px}
   .era-btn{background:var(--panel);border:1px solid var(--line);color:var(--sub);
-    padding:8px 14px;border-radius:10px;font-size:13px;cursor:pointer;transition:.15s}
+    padding:11px 18px;border-radius:11px;font-size:15px;cursor:pointer;transition:.15s}
   .era-btn:hover{border-color:var(--accent);color:var(--ink)}
   .era-btn.active{background:var(--panel-2);border-color:var(--accent);color:var(--ink)}
-  .era-btn .cnt{color:var(--accent);font-size:11px;margin-left:6px}
-  .mix-btn{border-style:dashed;border-color:var(--accent)}
+  .era-btn .cnt{color:var(--accent);font-size:13px;margin-left:6px}
+  .mix-btn{}
+
+  /* ===== 並び替え問題 ===== */
+  .sort-btn{border-color:var(--accent)}
+
+  /* ===== 記述問題 ===== */
+  .write-btn{border-color:var(--accent)}
+  .write-wrap{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:24px 20px}
+  .write-head{margin-bottom:18px}
+  .write-era{font-size:13px;color:var(--accent);letter-spacing:.04em;margin-bottom:10px}
+  .write-q{font-size:16px;color:var(--ink);line-height:1.7;font-weight:600}
+  .write-q.small{font-size:14px;font-weight:600;color:var(--sub);line-height:1.6;margin-bottom:20px}
+  .write-input{width:100%;box-sizing:border-box;background:var(--panel-2);border:1px solid var(--line);border-radius:12px;
+    color:var(--ink);font-size:15px;line-height:1.7;padding:14px;resize:vertical;font-family:inherit}
+  .write-input:focus{outline:none;border-color:var(--accent)}
+  .write-submit{width:100%;margin-top:14px;padding:14px;border-radius:12px;font-size:16px;font-weight:700;
+    background:var(--accent);border:none;color:#1a1a1a;cursor:pointer;transition:.15s}
+  .write-submit:hover{filter:brightness(1.08)}
+  .write-result{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:24px 20px}
+  .write-block{margin-bottom:20px}
+  .write-label{font-size:12px;color:var(--sub);letter-spacing:.06em;margin-bottom:8px}
+  .write-label.gold{color:var(--accent)}
+  .write-mine{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:14px;font-size:14px;line-height:1.7;color:var(--ink);white-space:pre-wrap}
+  .write-model{background:rgba(201,162,75,.08);border:1px solid var(--accent);border-radius:10px;padding:14px;font-size:14px;line-height:1.8;color:var(--ink)}
+  .kw-list{display:flex;flex-wrap:wrap;gap:8px}
+  .kw-chip{background:var(--panel-2);border:1px solid var(--accent);color:var(--accent);border-radius:999px;padding:5px 14px;font-size:13px;font-weight:600}
+  .write-hint{font-size:12px;color:var(--sub);margin-top:10px}
+  .write-actions{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+  .write-next{padding:14px;border-radius:12px;font-size:16px;font-weight:700;background:var(--panel-2);border:1px solid var(--accent);color:var(--ink);cursor:pointer}
+  .write-again{padding:12px;border-radius:12px;font-size:14px;background:none;border:1px solid var(--line);color:var(--sub);cursor:pointer}
+  .write-again:hover{border-color:var(--accent);color:var(--ink)}
+
+  /* ===== 待機画面（時代選択後） ===== */
+  .standby{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);
+    padding:48px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:18px;min-height:290px;justify-content:center}
+  .standby-era{font-size:38px;font-weight:800;letter-spacing:.08em;color:var(--ink)}
+  .standby-mode{font-size:16px;color:var(--accent);letter-spacing:.04em}
+  .standby-hint{font-size:14px;color:var(--sub)}
+  .standby-start{margin-top:8px;padding:16px 56px;border-radius:14px;font-size:20px;font-weight:800;letter-spacing:.1em;
+    background:var(--accent);border:none;color:#1a1a1a;cursor:pointer;transition:.15s}
+  .standby-start:hover{filter:brightness(1.08);transform:translateY(-2px)}
+  .sort-wrap{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:24px 20px;
+    min-height:290px;display:flex;flex-direction:column;justify-content:center}
+  .sort-head{text-align:center;margin-bottom:20px}
+  .sort-era{font-size:13px;color:var(--accent);letter-spacing:.04em;margin-bottom:6px}
+  .sort-inst{font-size:15px;color:var(--ink);font-weight:600}
+  .sort-slots{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+  .sort-slot{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;
+    background:var(--panel-2);border:1px dashed var(--line);min-height:48px}
+  .sort-slot.filled{border-style:solid;border-color:var(--accent);cursor:pointer}
+  .sort-num{flex-shrink:0;width:24px;height:24px;border-radius:50%;background:var(--accent);color:#1a1a1a;
+    font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .sort-slot-label{font-size:14px;color:var(--ink)}
+  .sort-slot-empty{color:var(--sub);font-size:14px}
+  .sort-choices{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+  .sort-choice{padding:14px 16px;border-radius:12px;background:var(--panel-2);border:1px solid var(--line);
+    color:var(--ink);font-size:14px;text-align:left;cursor:pointer;transition:.15s}
+  .sort-choice:hover{border-color:var(--accent)}
+  .sort-reset{width:100%;padding:10px;border-radius:10px;background:none;border:1px solid var(--line);
+    color:var(--sub);font-size:13px;cursor:pointer}
+  .sort-reset:hover{border-color:var(--accent);color:var(--ink)}
+  .sort-result{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:30px 22px;text-align:center}
+  .sort-verdict{font-size:26px;font-weight:800;margin-bottom:22px}
+  .sort-verdict.ok{color:var(--ok)}
+  .sort-verdict.ng{color:var(--miss)}
+  .sort-ans-title{font-size:13px;color:var(--sub);margin-bottom:12px;letter-spacing:.06em}
+  .sort-ans-list{display:flex;flex-direction:column;gap:8px;margin-bottom:24px;text-align:left}
+  .sort-ans-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--panel-2);border-radius:10px}
+  .sort-ans-row span:nth-child(2){flex:1;font-size:14px;color:var(--ink)}
+  .sort-ans-note{font-size:12px;color:var(--accent)}
+  .sort-next,.sort-result .secondary{padding:12px 28px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;
+    background:var(--panel-2);border:1px solid var(--accent);color:var(--ink)}
+  .sort-result-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .sort-next.secondary{background:none;border-color:var(--line);color:var(--sub)}
+  .sort-next.secondary:hover{border-color:var(--accent);color:var(--ink)}
   .mix-setup{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:32px 26px;text-align:center}
   .mix-setup h2{font-size:20px;margin-bottom:10px}
   .mix-setup p{color:var(--sub);font-size:13px;margin-bottom:22px;line-height:1.7}
@@ -49,22 +143,21 @@
     padding:13px 30px;border-radius:13px;font-size:15px;font-weight:700;cursor:pointer}
   .mix-start:hover{background:rgba(201,162,75,.15)}
 
-  .modes{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .modes{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;min-height:88px;align-content:flex-start}
   .mode-btn{background:var(--panel);border:1px solid var(--line);color:var(--sub);
-    padding:7px 13px;border-radius:10px;font-size:12px;cursor:pointer;transition:.15s}
+    padding:11px 17px;border-radius:11px;font-size:14px;cursor:pointer;transition:.15s}
   .mode-btn:hover{border-color:var(--accent);color:var(--ink)}
   .mode-btn.active{background:var(--panel-2);border-color:var(--accent);color:var(--ink)}
-  .review-btn{border-style:dashed}
   .review-btn.has{color:var(--miss)}
-  .review-btn .cnt{color:var(--accent);font-size:11px;margin-left:5px}
+  .review-btn .cnt{color:var(--accent);font-size:13px;margin-left:5px}
   .review-btn.has .cnt{color:var(--miss)}
 
   .status{display:flex;justify-content:space-between;align-items:center;margin:20px 2px 12px;font-size:12px;color:var(--sub)}
   .bar{height:4px;background:var(--line);border-radius:99px;overflow:hidden;margin:0 2px 20px}
   .bar > i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
 
-  .stage{perspective:1400px;margin-bottom:22px}
-  .card{position:relative;width:100%;min-height:280px;transform-style:preserve-3d;
+  .stage{perspective:1400px;margin-bottom:14px}
+  .card{position:relative;width:100%;min-height:264px;transform-style:preserve-3d;
     transition:transform .5s cubic-bezier(.2,.7,.2,1);cursor:pointer}
   .card.flip{transform:rotateY(180deg)}
   .face{position:absolute;inset:0;backface-visibility:hidden;
@@ -98,7 +191,20 @@
   .done button.secondary{border-color:var(--line);color:var(--sub)}
 
   /* 一覧表示 */
-  .list-wrap{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+  .list-wrap{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;
+    min-height:290px;display:flex;flex-direction:column;justify-content:center}
+  /* 検索付き一覧は上詰め＋検索バーを上端固定 */
+  .list-wrap.searchable{justify-content:flex-start}
+  .list-search{position:sticky;top:0;z-index:5;background:var(--panel);
+    padding:14px 16px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center}
+  .list-search input{flex:1;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;
+    color:var(--ink);font-size:14px;padding:10px 12px;box-sizing:border-box}
+  .list-search input:focus{outline:none;border-color:var(--accent)}
+  .list-search .clear{flex:0 0 auto;background:none;border:1px solid var(--line);border-radius:8px;
+    color:var(--sub);font-size:12px;padding:8px 10px;cursor:pointer}
+  .list-search .clear:hover{border-color:var(--accent);color:var(--ink)}
+  .list-results{flex:1}
+  .list-empty{padding:40px 20px;text-align:center;color:var(--sub);font-size:14px}
   .list-group{padding:6px 0}
   .list-group-head{font-size:11px;letter-spacing:.12em;color:var(--accent);padding:12px 20px 6px;border-top:1px solid var(--line)}
   .list-group:first-child .list-group-head{border-top:none}
@@ -107,15 +213,251 @@
   .list-q{flex:1;font-size:14px;color:var(--ink);line-height:1.6}
   .list-a{flex:0 0 auto;max-width:42%;text-align:right;font-size:14px;font-weight:700;color:var(--accent);line-height:1.6}
   .list-count{font-size:12px;color:var(--sub);padding:14px 20px;border-top:1px solid var(--line)}
+  .list-hit{background:rgba(201,162,75,.28);border-radius:3px;padding:0 1px}
 
   .foot{text-align:center;color:var(--sub);font-size:11px;margin-top:28px;line-height:1.8}
   .foot b{color:var(--accent);font-weight:600}
+
+  /* ===== トップ画面（ホーム） ===== */
+  .home-wrap{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding-top:0;padding-bottom:40px}
+  .home-header{text-align:center;margin-bottom:52px}
+  .home-title{font-size:40px;letter-spacing:.14em;font-weight:700;color:var(--accent)}
+  .home-sub{color:var(--sub);font-size:14px;margin-top:14px;letter-spacing:.08em}
+  /* 起動直後の順次フェードイン（intro クラスが付いている間だけ隠して、段階的に出す） */
+  #homeScreen.intro .home-title,
+  #homeScreen.intro .home-sub,
+  #homeScreen.intro .subjects,
+  #homeScreen.intro .sophia-btn{opacity:0;animation:homeFadeIn .9s ease-out forwards}
+  #homeScreen.intro .home-title{animation-delay:.5s}
+  #homeScreen.intro .home-sub{animation-delay:1.5s}
+  #homeScreen.intro .subjects{animation-delay:1.9s}
+  #homeScreen.intro .sophia-btn{animation-delay:2.3s}
+  @keyframes homeFadeIn{ from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  /* HISTORIA画面の順次フェードイン：HISTORIA → 時代を選ぶ → 出題モード → スライド */
+  #historyApp.intro > header,
+  #historyApp.intro > .section-label,
+  #historyApp.intro > .eras,
+  #historyApp.intro > .modes,
+  #historyApp.intro > .status,
+  #historyApp.intro > .bar,
+  #historyApp.intro > #main{opacity:0;animation:homeFadeIn .7s ease-out forwards}
+  #historyApp.intro > header{animation-delay:.1s}
+  #historyApp.intro > .section-label:nth-of-type(1){animation-delay:.7s}
+  #historyApp.intro > .eras{animation-delay:.7s}
+  #historyApp.intro > .section-label:nth-of-type(3){animation-delay:1.2s}
+  #historyApp.intro > .modes{animation-delay:1.2s}
+  #historyApp.intro > .status{animation-delay:1.7s}
+  #historyApp.intro > .bar{animation-delay:1.7s}
+  #historyApp.intro > #main{animation-delay:1.7s}
+  .subjects{display:flex;flex-direction:row;gap:18px}
+  .subject-card{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+    gap:16px;padding:44px 12px 38px;min-height:320px;
+    background:linear-gradient(135deg,var(--panel-2),var(--panel));
+    border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);
+    cursor:pointer;transition:.18s;text-align:center;
+  }
+  .subject-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .subject-icon{width:92px;height:92px;display:flex;align-items:center;justify-content:center;margin-bottom:4px}
+  .subject-icon svg{width:100%;height:100%}
+  .subject-body{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:auto}
+  .subject-jp{font-size:38px;font-weight:800;letter-spacing:.1em;color:var(--ink)}
+  .subject-en{font-size:11px;letter-spacing:.18em;color:var(--accent)}
+  .sophia-btn{display:flex;align-items:center;justify-content:center;gap:10px;
+    margin:28px auto 0;padding:14px 32px;border-radius:14px;
+    background:linear-gradient(135deg,var(--panel-2),var(--panel));
+    border:1px solid var(--line);color:var(--accent);font-size:15px;font-weight:700;
+    letter-spacing:.14em;cursor:pointer;transition:.18s;box-shadow:var(--shadow)}
+  .sophia-btn svg{width:20px;height:20px;flex-shrink:0}
+  .sophia-btn:hover{border-color:var(--accent);transform:translateY(-2px)}
+
+  /* ===== Coming Soon 画面 ===== */
+  .soon-wrap{padding-top:24px;min-height:70vh;display:flex;flex-direction:column}
+  .soon-box{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px}
+  .soon-label{font-size:13px;letter-spacing:.28em;color:var(--accent)}
+  .soon-text{font-size:44px;font-weight:800;letter-spacing:.04em}
+  .soon-note{color:var(--sub);font-size:13px}
+  .back-home{align-self:flex-start;background:none;border:1px solid var(--line);color:var(--sub);
+    padding:8px 16px;border-radius:10px;font-size:13px;cursor:pointer;transition:.15s}
+  .back-home:hover{border-color:var(--accent);color:var(--ink)}
+  .back-home.small{padding:4px 12px;font-size:16px;margin-right:4px}
+  .brand{align-items:center}
+  /* 設定ボタン（トップ画面 左上・白の3本線） */
+  #settingsBtn{position:fixed;top:18px;left:18px;z-index:40;
+    width:44px;height:44px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;
+    background:none;border:none;cursor:pointer;padding:10px}
+  #settingsBtn span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:.2s}
+  #settingsBtn:hover span{background:var(--accent)}
+  #settingsBtn.intro{opacity:0;animation:homeFadeIn .8s ease-out 2.6s forwards}
+  /* 設定パネル（オーバーレイ） */
+  #settingsPanel{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.55);
+    display:none;align-items:flex-start;justify-content:flex-start}
+  #settingsPanel.open{display:flex}
+  #settingsPanel .panel{background:var(--panel);border-right:1px solid var(--line);
+    width:min(320px,80vw);height:100%;padding:70px 24px 24px;box-shadow:var(--shadow);
+    display:flex;flex-direction:column;gap:18px}
+  #settingsPanel .panel h2{font-size:18px;letter-spacing:.1em;color:var(--ink)}
+  #settingsPanel .panel .set-note{font-size:13px;color:var(--sub);line-height:1.7}
+  #settingsPanel .set-row{display:flex;align-items:center;justify-content:space-between;gap:14px}
+  #settingsPanel .set-label{font-size:15px;color:var(--ink)}
+  #settingsPanel .set-toggle{min-width:58px;padding:8px 0;border-radius:10px;font-size:14px;font-weight:700;
+    cursor:pointer;background:var(--panel-2);border:1px solid var(--accent);color:var(--accent);transition:.15s}
+  #settingsPanel .set-toggle[aria-pressed="false"]{border-color:var(--line);color:var(--sub)}
+  #settingsPanel .set-block{display:flex;flex-direction:column;gap:10px}
+  #settingsPanel .set-options{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  #settingsPanel .set-opt{padding:8px 14px;border-radius:10px;font-size:14px;cursor:pointer;
+    background:var(--panel-2);border:1px solid var(--line);color:var(--sub);transition:.15s}
+  #settingsPanel .set-opt:hover{border-color:var(--accent);color:var(--ink)}
+  #settingsPanel .amb-cycle{min-width:104px;text-align:center;border-color:var(--accent);color:var(--accent);font-weight:700;
+    overflow:hidden}
+  #settingsPanel .amb-cycle .amb-name{display:inline-block}
+  #settingsPanel .amb-cycle.swap .amb-name{animation:ambSwap .32s ease}
+  #settingsPanel .amb-off{margin-left:6px}
+  #settingsPanel .amb-off.active{border-color:var(--accent);color:var(--accent);font-weight:700}
+  #settingsPanel .amb-cycle.muted{border-color:var(--line);color:var(--sub);font-weight:400}
+  @keyframes ambSwap{
+    0%{opacity:1;transform:translateY(0)}
+    45%{opacity:0;transform:translateY(-8px)}
+    55%{opacity:0;transform:translateY(8px)}
+    100%{opacity:1;transform:translateY(0)}
+  }
+  #settingsClose{position:absolute;top:18px;left:18px;width:44px;height:44px;
+    background:none;border:none;color:#fff;font-size:22px;cursor:pointer;line-height:1}
+  #settingsClose:hover{color:var(--accent)}
+
+  /* ===== SOPHIA（AI相談チャット） ===== */
+  .sophia-wrap{height:100vh;display:flex;flex-direction:column;padding-top:24px;padding-bottom:16px;overflow:hidden}
+  .sophia-sub{color:var(--sub);font-size:13px;margin:4px 2px 14px;letter-spacing:.04em;flex-shrink:0}
+  .sophia-messages{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding:4px 2px 16px}
+  .sophia-msg{max-width:82%;padding:12px 16px;border-radius:16px;font-size:14px;line-height:1.7;white-space:pre-wrap}
+  .sophia-msg.user{align-self:flex-end;background:var(--panel-2);border:1px solid var(--accent);
+    color:var(--ink);border-bottom-right-radius:4px}
+  .sophia-msg.ai{align-self:flex-start;background:var(--panel);border:1px solid var(--line);
+    color:var(--ink);border-bottom-left-radius:4px}
+  .sophia-msg.ai .who{display:block;font-size:11px;color:var(--accent);letter-spacing:.12em;margin-bottom:6px}
+  .sophia-typing{align-self:flex-start;color:var(--sub);font-size:13px;padding:2px 6px;letter-spacing:.04em}
+  .sophia-input-row{display:flex;gap:10px;align-items:flex-end;border-top:1px solid var(--line);
+    padding-top:14px;flex-shrink:0}
+  .sophia-input-row textarea{flex:1;resize:none;max-height:120px;background:var(--panel-2);
+    border:1px solid var(--line);border-radius:12px;color:var(--ink);font-size:14px;padding:12px 14px;
+    box-sizing:border-box;font-family:inherit;line-height:1.5}
+  .sophia-input-row textarea:focus{outline:none;border-color:var(--accent)}
+  .sophia-input-row button{flex-shrink:0;width:44px;height:44px;border-radius:12px;
+    background:var(--accent);border:none;color:#1a1a1a;font-size:18px;font-weight:700;cursor:pointer;transition:.15s}
+  .sophia-input-row button:hover{filter:brightness(1.08)}
+  .sophia-input-row button:disabled{opacity:.4;cursor:default}
 </style>
 </head>
 <body>
-<div class="wrap">
+
+<!-- ========== 起動時スプラッシュ（アプリ名フェードイン→フェードアウト） ========== -->
+<div id="splash">
+  <div id="splashTitle">SOCIETAS</div>
+</div>
+
+<canvas id="sakura"></canvas>
+
+<!-- ========== 設定ボタン（トップ画面 左上）＋設定パネル ========== -->
+<button id="settingsBtn" aria-label="設定"><span></span><span></span><span></span></button>
+<div id="settingsPanel">
+  <button id="settingsClose" aria-label="閉じる">✕</button>
+  <div class="panel">
+    <h2>設定</h2>
+    <div class="set-row">
+      <span class="set-label">花びらを舞わせる</span>
+      <button id="petalToggle" class="set-toggle" aria-pressed="true">ON</button>
+    </div>
+    <div class="set-block">
+      <span class="set-label">環境音</span>
+      <div class="set-options">
+        <button class="set-opt amb-cycle" id="ambientCycle"><span class="amb-name">木漏れ日</span></button>
+        <button class="set-opt amb-off" id="ambientOff">OFF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ========== トップ画面（ホーム）：3分野を選ぶ ========== -->
+<div class="wrap home-wrap" id="homeScreen">
+  <header class="home-header">
+    <h1 class="home-title">SOCIETAS</h1>
+    <p class="home-sub">分野をえらんでください</p>
+  </header>
+  <div class="subjects">
+    <button class="subject-card" id="goChiri">
+      <span class="subject-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#c9a24b" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"/>
+          <ellipse cx="12" cy="12" rx="4" ry="9"/>
+          <path d="M3 12h18"/>
+          <path d="M4.5 7h15M4.5 17h15"/>
+        </svg>
+      </span>
+      <span class="subject-body">
+        <span class="subject-jp">地理</span>
+        <span class="subject-en">GEOGRAPHIA</span>
+      </span>
+    </button>
+    <button class="subject-card" id="goRekishi">
+      <span class="subject-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#c9a24b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/>
+          <line x1="13" y1="19" x2="19" y2="13"/>
+          <line x1="16" y1="16" x2="20" y2="20"/>
+          <line x1="19" y1="21" x2="21" y2="19"/>
+          <polyline points="14.5 6.5 18 3 21 3 21 6 17.5 9.5"/>
+          <line x1="5" y1="14" x2="9" y2="18"/>
+          <line x1="7" y1="17" x2="4" y2="20"/>
+          <line x1="3" y1="19" x2="5" y2="21"/>
+        </svg>
+      </span>
+      <span class="subject-body">
+        <span class="subject-jp">歴史</span>
+        <span class="subject-en">HISTORIA</span>
+      </span>
+    </button>
+    <button class="subject-card" id="goKoumin">
+      <span class="subject-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#c9a24b" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3v18"/>
+          <path d="M7 21h10"/>
+          <path d="M5 6h14"/>
+          <path d="M5 6l-2.5 5.5a3 3 0 0 0 5 0L5 6z"/>
+          <path d="M19 6l-2.5 5.5a3 3 0 0 0 5 0L19 6z"/>
+        </svg>
+      </span>
+      <span class="subject-body">
+        <span class="subject-jp">公民</span>
+        <span class="subject-en">CIVITAS</span>
+      </span>
+    </button>
+  </div>
+  <button class="sophia-btn" id="goSophia">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#c9a24b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3a6 6 0 0 0-6 6c0 2.5 1.5 4 2.2 5.3.5 1 .8 1.7.8 2.7h6c0-1 .3-1.7.8-2.7C16.5 13 18 11.5 18 9a6 6 0 0 0-6-6z"/>
+      <path d="M9.5 20h5"/>
+      <path d="M10.5 22h3"/>
+    </svg>
+    <span>SOPHIA</span>
+  </button>
+</div>
+
+<!-- ========== Coming Soon 画面 ========== -->
+<div class="wrap soon-wrap" id="soonScreen" style="display:none">
+  <button class="back-home" onclick="showHome()">← もどる</button>
+  <div class="soon-box">
+    <div class="soon-label" id="soonLabel"></div>
+    <div class="soon-text">Coming Soon！</div>
+    <p class="soon-note">この分野は準備中です。もうしばらくお待ちください。</p>
+  </div>
+</div>
+
+<!-- ========== 歴史アプリ本体 ========== -->
+<div class="wrap" id="historyApp" style="display:none">
   <header>
     <div class="brand">
+      <button class="back-home small" onclick="showHome()">←</button>
       <h1>HISTORIA</h1>
     </div>
   </header>
@@ -135,6 +477,22 @@
   <div id="main"></div>
 </div>
 
+<!-- ========== SOPHIA（AI相談・チャット） ========== -->
+<div class="wrap sophia-wrap" id="sophiaScreen" style="display:none">
+  <header>
+    <div class="brand">
+      <button class="back-home small" onclick="showHome()">←</button>
+      <h1>SOPHIA</h1>
+    </div>
+  </header>
+  <p class="sophia-sub">わからないことをきいてみよう</p>
+  <div class="sophia-messages" id="sophiaMessages"></div>
+  <div class="sophia-input-row">
+    <textarea id="sophiaInput" placeholder="質問を入力" rows="1"></textarea>
+    <button id="sophiaSend" aria-label="送信">→</button>
+  </div>
+</div>
+
 <script>
 /* ============================================================
    時代ごとのストック — C案（1用語を複数の切り口で問う）
@@ -142,7 +500,7 @@
    ============================================================ */
 const ERAS = [
   {
-    era:"古代文明",
+    era:"古代",
     cards:[
       {group:"四大文明",q:"エジプト・メソポタミア・インダス・中国に代表される、大河のほとりで生まれた古代の文明をまとめて何という？",a:"（世界）四大文明",note:"いずれも農耕に適した大河の流域で発生した。"},
       {group:"四大文明",q:"四大文明に共通する、文明が発達した立地上の特徴は？",a:"大河の流域",note:"水と、川がはこぶ肥えた土が農耕を支えた。"},
@@ -505,7 +863,7 @@ const ERAS = [
     ]
   },
   {
-    era:"江戸時代",
+    era:"江戸時代・前期",
     cards:[
       {group:"幕府の成立",q:"1600年、徳川家康が石田三成らを破り、天下の実権をにぎるきっかけとなった戦いは？",a:"関ヶ原の戦い",note:"「天下分け目の戦い」とよばれる。"},
       {group:"幕府の成立",q:"関ヶ原の戦いに勝ち、1603年に征夷大将軍となって江戸幕府を開いた人物は？",a:"徳川家康",note:"江戸（東京）に幕府を開いた。"},
@@ -526,17 +884,504 @@ const ERAS = [
       {group:"鎖国への道",q:"キリスト教を防ぐため、幕府が外国との交流を制限した政策を何という？",a:"鎖国",note:"徳川家光のときに完成した。"},
       {group:"鎖国への道",q:"鎖国の下で、キリスト教を布教しないヨーロッパの国として、長崎で貿易を許された国は？",a:"オランダ",note:"長崎の出島で貿易が行われた。"},
       {group:"鎖国への道",q:"鎖国の下で、オランダと中国との貿易のために長崎につくられた人工の島は？",a:"出島",note:"ここに商館が置かれ、外国との窓口となった。"},
-      {group:"鎖国への道",q:"キリスト教徒を見つけ出すため、キリストや聖母マリアの像を踏ませたことを何という？",a:"絵踏（踏絵）",note:"信者を発見するために行われた。"}
+      {group:"鎖国への道",q:"キリスト教徒を見つけ出すため、キリストや聖母マリアの像を踏ませたことを何という？",a:"絵踏（踏絵）",note:"信者を発見するために行われた。"},
+
+      {group:"幕府の成立",q:"関ヶ原の戦いで徳川家康と対立し、西軍の中心となって敗れた豊臣方の武将は？",a:"石田三成",note:"豊臣秀吉に仕えた家臣。関ヶ原で敗れて処刑された。"},
+
+      {group:"幕府のしくみ",q:"幕府が直接支配した領地を何という？",a:"幕領（天領・幕府領）",note:"全国の石高の約4分の1をしめ、幕府の財政を支えた。"},
+      {group:"幕府のしくみ",q:"幕領から得られる年貢は、幕府にとってどのような意味を持っていた？",a:"幕府の財政（収入）を支える基盤となった",note:"直轄地の年貢が幕府の力の源だった。"},
+      {group:"幕府のしくみ",q:"将軍直属の家臣のうち、将軍に会うことができた（御目見え以上の）武士を何という？",a:"旗本",note:"石高は1万石未満。御家人と合わせて将軍を直接支えた。"},
+      {group:"幕府のしくみ",q:"将軍直属の家臣のうち、将軍に会うことのできない（御目見え以下の）武士を何という？",a:"御家人",note:"旗本と区別される。両者を合わせて「直参」とよぶ。"},
+      {group:"幕府のしくみ",q:"朝廷や西国の大名を監視するため、幕府が京都に置いた役職は？",a:"京都所司代",note:"朝廷の動きを見張り、西日本の警備にあたった。"},
+      {group:"幕府のしくみ",q:"江戸幕府で、将軍のもとで政務全体を統括した最高の役職は？",a:"老中",note:"複数人が置かれ、月番で交代しながら幕府の政治を運営した。"},
+      {group:"幕府のしくみ",q:"老中の上に、必要なときだけ置かれた臨時の最高職を何という？",a:"大老",note:"通常は置かれず、重大なときのみ1名が任命された。老中と区別する。"},
+
+      {group:"身分制度",q:"武士だけに許された、名字を名のり刀を差すことのできる特権を何という？",a:"名字帯刀",note:"武士の身分を示す特権とされた。"},
+      {group:"身分制度",q:"江戸時代、検地帳に登録され、田畑を持って年貢を納めた百姓を何という？",a:"本百姓",note:"村の運営を担い、年貢負担の中心となった。"},
+      {group:"身分制度",q:"田畑を持たず、小作や日雇いなどで生活した百姓を何という？",a:"水呑百姓",note:"本百姓と区別される、土地を持たない百姓。"},
+
+      {group:"産業の発達",q:"江戸時代、深く耕すために改良された、刃が数本に分かれた鍬（くわ）を何という？",a:"備中ぐわ",note:"土を深く耕せるようになり、生産力が高まった。"},
+      {group:"産業の発達",q:"江戸時代、稲の脱穀（もみを取ること）を速く行うために発明された農具は？",a:"千歯こき",note:"多くの歯でイネからもみをしごき取る。作業が大幅に速くなった。"},
+      {group:"産業の発達",q:"風の力でもみがらやごみを選別する、江戸時代に広まった農具は？",a:"唐箕（とうみ）",note:"手回しの風でもみと不要物を分けた。"},
+
+      {group:"鎖国への道",q:"朱印船貿易によって、東南アジア各地に日本人が移り住んでできた町を何という？",a:"日本町",note:"シャムのアユタヤなどが有名。鎖国で衰えた。"},
+      {group:"鎖国への道",q:"幕府がキリスト教の信仰を禁止した命令を何という？",a:"禁教令",note:"1612年に幕領、翌年に全国へ拡大。宣教師の追放や信者の弾圧を進めた。"},
+      {group:"鎖国への道",q:"鎖国が完成する前、ヨーロッパ船の来航が許されていた九州の2つの港はどこ？",a:"平戸・長崎",note:"のちに貿易は長崎の出島に限られた。"},
+      {group:"鎖国への道",q:"すべての人をどこかの寺に所属させ、キリスト教徒でないことを寺に証明させた制度は？",a:"寺請制度",note:"宗門改めとともに、キリスト教禁止のしくみとして機能した。"},
+
+      {group:"鎖国下の対外関係",q:"長崎のオランダ商館長が、海外の情勢を幕府に報告した文書を何という？",a:"オランダ風説書",note:"鎖国下で、幕府が海外の動きを知る貴重な情報源だった。"},
+      {group:"鎖国下の対外関係",q:"鎖国の下で、長崎に来た中国人を居住させた区域を何という？",a:"唐人屋敷",note:"中国人の居住と貿易を長崎の一区画に限定した。"},
+      {group:"鎖国下の対外関係",q:"将軍の代がわりなどに、朝鮮から日本へ送られた使節を何という？",a:"朝鮮通信使",note:"対馬藩の仲立ちで国交が保たれた。"},
+      {group:"鎖国下の対外関係",q:"朝鮮との外交と貿易の窓口となった藩は？",a:"対馬藩",note:"朝鮮通信使の受け入れや貿易を担った。"},
+      {group:"鎖国下の対外関係",q:"1669年、松前藩の支配に対してアイヌの人々を率いて戦った首長は？",a:"シャクシャイン",note:"蝦夷地（北海道）で起こったアイヌの蜂起の指導者。"},
+      {group:"鎖国下の対外関係",q:"蝦夷地（北海道）でアイヌの人々との交易を独占した藩は？",a:"松前藩",note:"アイヌとの不平等な取引が、シャクシャインの戦いの背景となった。"},
+      {group:"鎖国下の対外関係",q:"出島のオランダとの貿易で、日本が主に輸入した品は？",a:"生糸・絹織物・砂糖など",note:"中国産の生糸（白糸）が特に重要だった。"},
+      {group:"鎖国下の対外関係",q:"朝鮮との貿易で、日本が主に輸入した品は？",a:"木綿・朝鮮人参・生糸など",note:"対馬藩を通じて取引された。"},
+
+      {group:"交通・都市の発達",q:"江戸を起点として全国に整備された、東海道・中山道など5つの主要な街道をまとめて何という？",a:"五街道",note:"東海道・中山道・甲州道中・日光道中・奥州道中の5つ。参勤交代や商業に使われた。"},
+      {group:"交通・都市の発達",q:"五街道の起点となった、江戸の日本橋に置かれた設備は何を数える基準になった？",a:"各地までの距離（道のり）",note:"日本橋が街道の起点とされた。"},
+      {group:"交通・都市の発達",q:"東北・北陸の年貢米などを、津軽海峡を回って太平洋沿いに江戸へ運んだ航路を何という？",a:"東廻り航路",note:"日本海側から太平洋を経て江戸に至る。河村瑞賢が整備した。"},
+      {group:"交通・都市の発達",q:"東北・北陸の物資を、日本海沿いに下関を回って大阪へ運んだ航路を何という？",a:"西廻り航路",note:"日本海から瀬戸内海を経て大阪に至る。"},
+      {group:"交通・都市の発達",q:"江戸時代、大阪と江戸の間で日用品などを運んだ大型の定期輸送船を何という？",a:"菱垣廻船",note:"のちに酒を専門に運ぶ樽廻船と競合した。"},
+      {group:"交通・都市の発達",q:"江戸時代、主に酒を大阪から江戸へ運ぶために使われた廻船を何という？",a:"樽廻船",note:"菱垣廻船より速く、しだいに輸送の主役となった。"},
+      {group:"交通・都市の発達",q:"日本海沿岸から蝦夷地や大阪を結び、各地で商品を売買しながら回った船を何という？",a:"北前船",note:"寄港地で買っては売る「買積み」で大きな利益をあげた。"},
+      {group:"交通・都市の発達",q:"政治の中心地であり、「将軍のおひざもと」とよばれた都市は？",a:"江戸",note:"18世紀には人口100万人をこえる大都市になった。"},
+      {group:"交通・都市の発達",q:"商業の中心地として栄え、「天下の台所」とよばれた都市は？",a:"大阪（大坂）",note:"全国の物資が集まる商業・流通の中心だった。"},
+      {group:"交通・都市の発達",q:"諸藩が年貢米や特産物を売りさばくために大阪などに置いた倉庫兼取引所を何という？",a:"蔵屋敷",note:"藩はここで米などを換金し、財政にあてた。"},
+      {group:"交通・都市の発達",q:"江戸時代、金・銀・銭の交換や金融を行って栄えた商人を何という？",a:"両替商",note:"金貨中心の江戸と銀貨中心の大阪の取引を仲立ちし、大きな富をたくわえた。"},
+
+      {group:"元禄文化",q:"17世紀末〜18世紀初め、上方（京都・大阪）の町人を担い手として栄えた文化を何という？",a:"元禄文化",note:"経済力をつけた町人が担い手。5代将軍綱吉のころに栄えた。"},
+      {group:"元禄文化",q:"元禄文化はどの地方の、どんな身分の人々を中心に栄えた文化か？",a:"上方（京都・大阪）の町人",note:"のちの化政文化（江戸中心）と対比して覚える。"},
+      {group:"元禄文化",q:"「奥の細道」で知られ、俳諧（俳句）を芸術に高めた元禄期の人物は？",a:"松尾芭蕉",note:"各地を旅して紀行文『奥の細道』を著した。"},
+      {group:"元禄文化",q:"「日本永代蔵」など、町人の生活をいきいきとえがいた浮世草子の作者は？",a:"井原西鶴",note:"町人の暮らしや欲望をリアルにえがいた。"},
+      {group:"元禄文化",q:"「曽根崎心中」など、人形浄瑠璃や歌舞伎の脚本を書いた元禄期の劇作家は？",a:"近松門左衛門",note:"義理と人情の板ばさみをえがいた作品で人気を得た。"},
+      {group:"元禄文化",q:"江戸時代に庶民の演劇として発達し、現在も伝わる伝統的な舞台芸能は？",a:"歌舞伎",note:"元禄期に人気を集め、近松門左衛門らが脚本を書いた。"},
+      {group:"元禄文化",q:"「燕子花図屛風」などで知られ、はなやかな装飾画を大成した元禄期の画家は？",a:"尾形光琳",note:"大和絵の伝統をもとに装飾性の高い作品を残した。"},
+      {group:"元禄文化",q:"「見返り美人図」で知られ、浮世絵の祖とされる元禄期の画家は？",a:"菱川師宣",note:"町人の風俗をえがき、のちの浮世絵の出発点となった。"},
+
+      {group:"綱吉と正徳の治",q:"学問（朱子学）を重んじる文治政治を進めた、江戸幕府5代将軍は？",a:"徳川綱吉",note:"元禄文化が栄えたころの将軍。"},
+      {group:"綱吉と正徳の治",q:"徳川綱吉が出した、極端な動物愛護の命令で、特に犬を保護させた法令は？",a:"生類憐みの令",note:"人々の生活を苦しめ、悪法とされた。綱吉は「犬公方」とよばれた。"},
+      {group:"綱吉と正徳の治",q:"徳川綱吉が儒学（朱子学）を広めるため、江戸の湯島に建てた孔子をまつる施設は？",a:"湯島聖堂",note:"のちに幕府の学問所（昌平坂学問所）へと発展した。"},
+      {group:"綱吉と正徳の治",q:"江戸幕府が正学として重んじた、身分の上下の秩序を重視する儒学の一派は？",a:"朱子学",note:"主従・身分の秩序を大切にする考えで、幕府の支配に都合がよかった。"},
+      {group:"綱吉と正徳の治",q:"6代・7代将軍のもとで、朱子学者として正徳の治とよばれる政治改革を行った人物は？",a:"新井白石",note:"儒学の考えにもとづいて政治を立て直そうとした。"},
+      {group:"綱吉と正徳の治",q:"新井白石が、財政の立て直しや貨幣の質の回復などを行った政治を何という？",a:"正徳の治",note:"享保の改革（8代吉宗）の直前に行われた。"}
+    ]
+  },
+  {
+    era:"江戸時代・後期",
+    cards:[
+      {group:"享保の改革",q:"18世紀前半、享保の改革を行った江戸幕府8代将軍は？",a:"徳川吉宗",note:"財政の立て直しをめざした。「米将軍」とよばれた。"},
+      {group:"享保の改革",q:"8代将軍徳川吉宗が、財政の立て直しをめざして行った幕政改革を何という？",a:"享保の改革",note:"18世紀前半。江戸時代の三大改革の最初。"},
+      {group:"享保の改革",q:"享保の改革で、大名に石高に応じて米を献上させ、かわりに参勤交代の江戸滞在を短縮した制度は？",a:"上米の制",note:"幕府の財政不足をおぎなうための一時的な制度。"},
+      {group:"享保の改革",q:"徳川吉宗が定めた、裁判の基準を示した法令集を何という？",a:"公事方御定書",note:"裁判や刑罰の基準を定め、公正な裁判をめざした。"},
+      {group:"享保の改革",q:"徳川吉宗が、庶民の意見を聞くために設けた投書箱を何という？",a:"目安箱",note:"民衆の声を政治に取り入れようとした。小石川養生所の設置につながった。"},
+
+      {group:"田沼の政治",q:"18世紀後半、商業を重視した積極的な政策を行った老中は？",a:"田沼意次",note:"商人の力を利用して幕府の財政を立て直そうとした。わいろが横行し批判された。"},
+      {group:"田沼の政治",q:"田沼意次が、営業の独占を認めるかわりに営業税をとるために積極的に公認した商工業者の同業組合を何という？",a:"株仲間",note:"幕府は税収をねらって結成をすすめた。のちに天保の改革で解散させられた。"},
+      {group:"田沼の政治",q:"株仲間を公認することで、幕府は何を得ようとした？",a:"営業税による収入（財政の立て直し）",note:"商業の力を利用して財政をおぎなうねらい。"},
+
+      {group:"寛政の改革",q:"18世紀末、寛政の改革を行った老中は？",a:"松平定信",note:"徳川吉宗の孫。田沼意次の政治を批判し、質素・倹約を進めた。"},
+      {group:"寛政の改革",q:"松平定信が行った、質素・倹約と農村の立て直しをめざす幕政改革を何という？",a:"寛政の改革",note:"きびしい統制で、かえって人々の反発をまねいた。"},
+      {group:"寛政の改革",q:"寛政の改革で、ききんに備えて各地に米をたくわえさせた政策を何という？",a:"囲米",note:"ききんや凶作に備えて米を備蓄させた。"},
+      {group:"寛政の改革",q:"寛政の改革で、朱子学以外の学問を幕府の学問所で教えることを禁じた政策を何という？",a:"寛政異学の禁",note:"朱子学を正学とし、思想の統制をはかった。"},
+      {group:"寛政の改革",q:"幕府が朱子学を教えるために設けた、湯島聖堂を起源とする学問所を何という？",a:"昌平坂学問所",note:"寛政異学の禁のもと、幕府の正式な学問所となった。"},
+
+      {group:"社会の変化",q:"商人が農民に道具や原料を貸し、家で製品を作らせて買い取る、江戸時代の生産のしくみを何という？",a:"問屋制家内工業",note:"問屋（商人）が農家に材料を前貸しし、できた製品を集めた。"},
+      {group:"社会の変化",q:"江戸時代後期、作業場に人を集め、分業で製品を作らせるようになった生産のしくみを何という？",a:"工場制手工業（マニュファクチュア）",note:"問屋制家内工業より進んだ形。資本主義的な生産の始まりとされる。"},
+      {group:"社会の変化",q:"重い年貢やききんに苦しんだ農民が、集団で領主に要求を突きつけた行動を何という？",a:"百姓一揆",note:"年貢の軽減などを求めた。ききんの年に増加した。"},
+      {group:"社会の変化",q:"都市で、米の買いしめや値上げに怒った貧しい人々が、米屋などをおそった行動を何という？",a:"打ちこわし",note:"ききんや米価の高騰のときに都市で起こった。"},
+
+      {group:"学問の発達",q:"オランダ語を通じてヨーロッパの学問・文化を研究する学問を何という？",a:"蘭学",note:"鎖国の下、長崎のオランダとの窓口から西洋の知識が入ってきた。"},
+      {group:"学問の発達",q:"前野良沢とともにオランダの解剖書を翻訳し、『解体新書』を出版した蘭学者は？",a:"杉田玄白",note:"苦労して翻訳を進めたようすを『蘭学事始』に記した。"},
+      {group:"学問の発達",q:"杉田玄白・前野良沢らがオランダの解剖書を翻訳して出版した医学書を何という？",a:"解体新書",note:"日本の蘭学の発展のきっかけとなった。"},
+      {group:"学問の発達",q:"全国を測量して歩き、正確な日本地図を作った江戸時代後期の人物は？",a:"伊能忠敬",note:"西洋の測量術を学び、実測にもとづく精密な日本地図を作成した。"},
+      {group:"学問の発達",q:"仏教や儒教が伝わる前の、日本古来の考え方を明らかにしようとした学問を何という？",a:"国学",note:"『古事記』『万葉集』などの古典を研究した。"},
+      {group:"学問の発達",q:"『古事記伝』を著し、国学を大成した江戸時代後期の学者は？",a:"本居宣長",note:"日本古来の精神を重んじ、のちの尊王思想にも影響をあたえた。"},
+      {group:"学問の発達",q:"江戸時代、町や村で庶民の子どもに読み・書き・そろばんを教えた教育施設を何という？",a:"寺子屋",note:"庶民の教育が広まり、日本の識字率を高めた。"},
+
+      {group:"化政文化",q:"19世紀初め、江戸を中心に町人が担い手となって栄えた文化を何という？",a:"化政文化",note:"元禄文化（上方中心）に対し、江戸中心の町人文化。皮肉やこっけいを好んだ。"},
+      {group:"化政文化",q:"化政文化はどの都市の、どんな身分の人々を中心に栄えた文化か？",a:"江戸の町人",note:"上方中心の元禄文化と対比して覚える。"},
+      {group:"化政文化",q:"こっけい本『東海道中膝栗毛』を書いた化政期の作者は？",a:"十返舎一九",note:"弥次さん・喜多さんの旅をえがき、庶民に人気を得た。"},
+      {group:"化政文化",q:"多色刷りの版画として発達し、風景や役者・美人をえがいた江戸時代の絵を何という？",a:"浮世絵",note:"化政期には葛飾北斎「富嶽三十六景」や歌川（安藤）広重「東海道五十三次」などの風景画が人気を集めた。"},
+      {group:"化政文化",q:"化政文化のころ、世相を皮肉ったりこっけいをよんだりして流行した、短い文芸を何という？",a:"狂歌・川柳",note:"和歌や俳句の形を借りて、社会を風刺した。"},
+
+      {group:"外国船の接近",q:"1808年、イギリス軍艦が長崎港に侵入して食料などを要求した事件を何という？",a:"フェートン号事件",note:"鎖国下の日本に外国船が接近し始めたことを示す事件。"},
+      {group:"外国船の接近",q:"1825年、幕府が日本に近づく外国船を追い払うよう命じた法令を何という？",a:"異国船打払令",note:"接近する外国船への強硬な方針を示した。"},
+      {group:"外国船の接近",q:"1837年、漂流民を送り届けようとしたアメリカ船を、異国船打払令にもとづいて撃退した事件は？",a:"モリソン号事件",note:"この対応を批判した蘭学者が処罰された（蛮社の獄）。"},
+      {group:"外国船の接近",q:"モリソン号事件での幕府の対応を批判した渡辺崋山・高野長英らが処罰された事件を何という？",a:"蛮社の獄",note:"幕府の対外政策への批判を、きびしく取りしまった。"},
+      {group:"外国船の接近",q:"アヘン戦争で清が敗れたことを受け、幕府が異国船打払令をゆるめて出した法令を何という？",a:"薪水給与令",note:"外国船に燃料や水をあたえることを認めた。強硬策からの方針転換。"},
+
+      {group:"天保の改革",q:"1837年、ききんに苦しむ人々を救うため、元幕府役人が大阪で起こした反乱の中心人物は？",a:"大塩平八郎",note:"もと大阪町奉行所の役人。幕府の元役人が反乱を起こしたことは幕府に衝撃をあたえた。"},
+      {group:"天保の改革",q:"1840年代、天保の改革を行った老中は？",a:"水野忠邦",note:"きびしい統制と改革を進めたが、反発が強く短期間で失敗した。"},
+      {group:"天保の改革",q:"水野忠邦が、質素・倹約や物価の引き下げをめざして行った幕政改革を何という？",a:"天保の改革",note:"株仲間の解散などを行ったが失敗。江戸時代の三大改革の最後。"},
+      {group:"天保の改革",q:"天保の改革で、江戸・大阪の周辺を幕府の直接支配地にしようとして失敗した政策を何という？",a:"上知令",note:"大名や旗本の反対が強く、実施できずに水野忠邦の失脚につながった。"},
+
+      {group:"開国",q:"1853年、軍艦を率いて浦賀に来航し、日本に開国を求めたアメリカの使者は？",a:"ペリー",note:"翌年再び来航し、日米和親条約を結ばせた。"},
+      {group:"開国",q:"1853年、ペリーが4隻の軍艦を率いて来航した、江戸湾の入り口の地はどこ？",a:"浦賀",note:"現在の神奈川県。ペリー来航の地として知られる。"},
+      {group:"開国",q:"1854年、ペリーの再来航を受けて幕府が結び、日本が開国することになった条約は？",a:"日米和親条約",note:"下田・函館の2港を開き、鎖国が事実上終わった。"},
+      {group:"開国",q:"日米和親条約で、日本が開いた2つの港はどこ？",a:"下田・函館",note:"アメリカ船への燃料・食料の補給などを認めた。"},
+
+      {group:"不平等条約と開国",q:"1858年、大老井伊直弼がアメリカと結んだ、貿易を認める条約を何という？",a:"日米修好通商条約",note:"朝廷の許可を得ないまま結ばれた。日本にとって不平等な内容だった。"},
+      {group:"不平等条約と開国",q:"朝廷の許可を得ないまま日米修好通商条約を結んだ、江戸幕府の大老は？",a:"井伊直弼",note:"反対派を安政の大獄でおさえたが、桜田門外の変で暗殺された。"},
+      {group:"不平等条約と開国",q:"日米修好通商条約で開かれることになった5つの港はどこ？",a:"函館・横浜・長崎・新潟・神戸",note:"これらの港で外国との貿易が始まった。"},
+      {group:"不平等条約と開国",q:"外国人が日本で罪をおかしても、日本の法律で裁けず、その国の領事が裁く権利を何という？",a:"領事裁判権（治外法権）",note:"日米修好通商条約に含まれた不平等な内容の一つ。"},
+      {group:"不平等条約と開国",q:"輸入品にかける関税を、自国だけで自由に決められる権利を何という？",a:"関税自主権",note:"この条約で日本には認められなかった。もう一つの不平等な内容。"},
+
+      {group:"尊王攘夷と幕府の動揺",q:"天皇を尊び、外国勢力を追い払おうとする、幕末に高まった政治運動を何という？",a:"尊王攘夷運動",note:"開国と不平等条約への反発から、下級武士を中心に広まった。"},
+      {group:"尊王攘夷と幕府の動揺",q:"1858〜59年、井伊直弼が幕府の政治に反対する大名や武士を多数処罰した弾圧を何という？",a:"安政の大獄",note:"吉田松陰らが処刑された。反発が桜田門外の変につながった。"},
+      {group:"尊王攘夷と幕府の動揺",q:"1860年、江戸城の門の近くで井伊直弼が水戸藩などの浪士に暗殺された事件を何という？",a:"桜田門外の変",note:"大老暗殺は幕府の権威を大きく低下させた。"},
+      {group:"尊王攘夷と幕府の動揺",q:"1862年、大名行列を横切ったイギリス人を薩摩藩士が殺傷した事件を何という？",a:"生麦事件",note:"これが翌年の薩英戦争の原因となった。"},
+      {group:"尊王攘夷と幕府の動揺",q:"生麦事件の報復として、1863年にイギリス艦隊が薩摩を攻撃した戦いを何という？",a:"薩英戦争",note:"敗れた薩摩は攘夷の難しさを知り、イギリスに接近して倒幕へと向かった。"},
+
+      {group:"倒幕へ",q:"土佐藩出身で、対立していた薩摩藩と長州藩の同盟を仲立ちした人物は？",a:"坂本龍馬",note:"薩長同盟の成立に力をつくした。のちに暗殺された。"},
+      {group:"倒幕へ",q:"1866年、坂本龍馬らの仲立ちで、薩摩藩と長州藩が幕府をたおすために結んだ同盟を何という？",a:"薩長同盟",note:"対立していた両藩が手を結び、倒幕勢力の中心となった。"},
+      {group:"倒幕へ",q:"薩摩藩を率いて倒幕の中心となり、のちに明治政府でも活躍した人物は？",a:"西郷隆盛",note:"大久保利通らとともに薩摩藩を動かし、倒幕を進めた。"},
+      {group:"倒幕へ",q:"大政奉還を行った、江戸幕府最後（15代）の将軍は？",a:"徳川慶喜",note:"政権を朝廷に返したが、その後の戊辰戦争で旧幕府軍は敗れた。"},
+
+      {group:"江戸幕府の終わり",q:"1867年、15代将軍徳川慶喜が政権を朝廷に返上したできごとを何という？",a:"大政奉還",note:"これにより約260年続いた江戸幕府の政治が終わった。"},
+      {group:"江戸幕府の終わり",q:"大政奉還の後、天皇を中心とする新政府の成立を宣言した命令を何という？",a:"王政復古の大号令",note:"幕府の廃止と、天皇中心の政治にもどすことを宣言した。"},
+      {group:"江戸幕府の終わり",q:"1868〜69年、新政府軍と旧幕府軍との間で行われた一連の戦いを何という？",a:"戊辰戦争",note:"鳥羽・伏見の戦いに始まり、函館の五稜郭で終わった。新政府軍が勝利した。"}
     ]
   }
 ];
 
-let state = { eraIndex:0, mode:"random", queue:[], pos:0, correct:0, flipped:false, missedByEra:{} };
+/* ============================================================
+   並び替え問題（用語カードとは別データ）
+   都立傾向：4つの出来事を「古い順」に並べる。
+   items は必ず正しい年代順で書く（表示時にシャッフルする）。
+   この配列は用語カードの集計・全問・一覧・全時代MIXには一切影響しない。
+   ============================================================ */
+const SORT_QUESTIONS = {
+  "古代":[
+    {theme:"中国の王朝と文明のうつりかわり",items:[
+      {label:"殷が甲骨文字を用いる",note:"紀元前16世紀ごろ"},
+      {label:"孔子が儒学を説く",note:"紀元前6世紀ごろ"},
+      {label:"秦の始皇帝が中国を統一する",note:"紀元前3世紀"},
+      {label:"漢がシルクロードで西方と交流する",note:"紀元前2世紀以降"}
+    ]},
+    {theme:"文明と宗教のおこり",items:[
+      {label:"メソポタミア文明・エジプト文明がおこる",note:"紀元前3000年ごろ"},
+      {label:"インダス文明がおこる",note:"紀元前2500年ごろ"},
+      {label:"シャカが仏教を開く",note:"紀元前5世紀ごろ"},
+      {label:"イエスがキリスト教のもとを開く",note:"1世紀ごろ"}
+    ]}
+  ],
+  "縄文・弥生時代":[
+    {theme:"日本のあけぼの",items:[
+      {label:"縄文土器が使われる",note:"縄文時代"},
+      {label:"稲作が大陸から伝わる",note:"弥生時代のはじまり"},
+      {label:"奴国の王が後漢から金印を授かる",note:"1世紀"},
+      {label:"卑弥呼が魏に使いを送る",note:"3世紀"}
+    ]},
+    {theme:"中国の歴史書に見える日本",items:[
+      {label:"『漢書』地理志：倭が100余国に分かれる",note:"紀元前1世紀ごろ"},
+      {label:"『後漢書』東夷伝：奴国の王が金印を授かる",note:"1世紀（57年）"},
+      {label:"『魏志』倭人伝：卑弥呼が魏に使いを送る",note:"3世紀（239年）"},
+      {label:"大和政権が生まれる",note:"3世紀後半ごろ"}
+    ]}
+  ],
+  "古墳時代":[
+    {theme:"大和政権の成長",items:[
+      {label:"大和政権が生まれる",note:"3世紀後半ごろ"},
+      {label:"大仙古墳がつくられる",note:"5世紀ごろ"},
+      {label:"ワカタケル大王が勢力を広げる",note:"5世紀後半"},
+      {label:"渡来人が須恵器などの技術を伝える",note:"5〜6世紀"}
+    ]}
+  ],
+  "飛鳥時代":[
+    {theme:"聖徳太子から律令国家へ",items:[
+      {label:"聖徳太子が冠位十二階を定める",note:"603年"},
+      {label:"大化の改新が始まる",note:"645年"},
+      {label:"白村江の戦いで敗れる",note:"663年"},
+      {label:"壬申の乱が起こる",note:"672年"}
+    ]},
+    {theme:"律令国家の完成へ",items:[
+      {label:"大化の改新が始まる",note:"645年"},
+      {label:"壬申の乱で天武天皇が勝つ",note:"672年"},
+      {label:"持統天皇が藤原京に移る",note:"694年"},
+      {label:"大宝律令が完成する",note:"701年"}
+    ]},
+    {theme:"聖徳太子の政治",items:[
+      {label:"聖徳太子が摂政となる",note:"593年"},
+      {label:"冠位十二階を定める",note:"603年"},
+      {label:"十七条の憲法を定める",note:"604年"},
+      {label:"小野妹子を遣隋使として送る",note:"607年"}
+    ]}
+  ],
+  "奈良時代":[
+    {theme:"奈良時代のできごと",items:[
+      {label:"平城京に都を移す",note:"710年"},
+      {label:"三世一身法が出される",note:"723年"},
+      {label:"墾田永年私財法が出される",note:"743年"},
+      {label:"東大寺の大仏がつくられる",note:"8世紀半ば"}
+    ]},
+    {theme:"律令国家の成立（制度と貨幣）",items:[
+      {label:"大宝律令が完成する",note:"701年"},
+      {label:"和同開珎がつくられる",note:"708年"},
+      {label:"平城京に都を移す",note:"710年"},
+      {label:"墾田永年私財法が出される",note:"743年"}
+    ]}
+  ],
+  "平安時代":[
+    {theme:"平安時代の政治のうつりかわり",items:[
+      {label:"桓武天皇が平安京に移す",note:"794年"},
+      {label:"藤原道長が摂関政治の全盛を築く",note:"11世紀初め"},
+      {label:"白河上皇が院政を始める",note:"1086年"},
+      {label:"平清盛が太政大臣になる",note:"1167年"}
+    ]},
+    {theme:"武士の成長",items:[
+      {label:"平将門の乱が起こる",note:"935年ごろ"},
+      {label:"前九年合戦が起こる",note:"11世紀半ば"},
+      {label:"保元の乱が起こる",note:"1156年"},
+      {label:"平治の乱が起こる",note:"1159年"}
+    ]},
+    {theme:"平安の文化と仏教",items:[
+      {label:"最澄・空海が新しい仏教を伝える",note:"9世紀初め"},
+      {label:"遣唐使が停止される",note:"894年"},
+      {label:"紫式部が『源氏物語』を書く",note:"11世紀初め"},
+      {label:"藤原頼通が平等院鳳凰堂を建てる",note:"1053年"}
+    ]}
+  ],
+  "鎌倉時代":[
+    {theme:"鎌倉幕府の成立と安定",items:[
+      {label:"壇ノ浦の戦いで平氏がほろびる",note:"1185年"},
+      {label:"源頼朝が征夷大将軍になる",note:"1192年"},
+      {label:"承久の乱が起こる",note:"1221年"},
+      {label:"御成敗式目が定められる",note:"1232年"}
+    ]},
+    {theme:"元寇と幕府のおとろえ",items:[
+      {label:"承久の乱が起こる",note:"1221年"},
+      {label:"文永の役が起こる",note:"1274年"},
+      {label:"弘安の役が起こる",note:"1281年"},
+      {label:"（永仁の）徳政令が出される",note:"1297年"}
+    ]},
+    {theme:"鎌倉の新しい仏教",items:[
+      {label:"法然が浄土宗を開く",note:"12世紀後半（1175年ごろ）"},
+      {label:"栄西が臨済宗（禅宗）を伝える",note:"12世紀末（1191年ごろ）"},
+      {label:"親鸞が浄土真宗を広める",note:"13世紀前半（1224年ごろ）"},
+      {label:"日蓮が日蓮宗を開く",note:"13世紀半ば（1253年）"}
+    ]}
+  ],
+  "室町時代":[
+    {theme:"室町幕府の成立と展開",items:[
+      {label:"建武の新政が始まる",note:"1334年ごろ"},
+      {label:"南北朝が合一される",note:"1392年"},
+      {label:"勘合貿易が始まる",note:"1404年"},
+      {label:"応仁の乱が起こる",note:"1467年"}
+    ]},
+    {theme:"民衆の成長",items:[
+      {label:"正長の土一揆が起こる",note:"1428年"},
+      {label:"応仁の乱が起こる",note:"1467年"},
+      {label:"加賀の一向一揆が起こる",note:"1488年"},
+      {label:"山城の国一揆が終わる",note:"1493年"}
+    ]},
+    {theme:"文化のうつりかわりと大事件",items:[
+      {label:"金閣が建てられる（北山文化）",note:"1397年ごろ"},
+      {label:"応仁の乱が起こる",note:"1467年"},
+      {label:"銀閣が建てられる（東山文化）",note:"1489年ごろ"},
+      {label:"鉄砲が種子島に伝わる",note:"1543年"}
+    ]}
+  ],
+  "安土桃山時代":[
+    {theme:"天下統一への歩み",items:[
+      {label:"桶狭間の戦いが起こる",note:"1560年"},
+      {label:"長篠の戦いが起こる",note:"1575年"},
+      {label:"本能寺の変が起こる",note:"1582年"},
+      {label:"豊臣秀吉が全国を統一する",note:"1590年"}
+    ]},
+    {theme:"ヨーロッパとの出会い",items:[
+      {label:"鉄砲が種子島に伝わる",note:"1543年"},
+      {label:"ザビエルがキリスト教を伝える",note:"1549年"},
+      {label:"バテレン追放令が出される",note:"1587年"},
+      {label:"文禄の役（朝鮮出兵）が始まる",note:"1592年"}
+    ]},
+    {theme:"秀吉の政治",items:[
+      {label:"太閤検地が始まる",note:"1582年〜"},
+      {label:"刀狩令が出される",note:"1588年"},
+      {label:"豊臣秀吉が全国を統一する",note:"1590年"},
+      {label:"文禄の役（朝鮮出兵）が始まる",note:"1592年"}
+    ]}
+  ],
+  "江戸時代・前期":[
+    {theme:"江戸幕府の成立と鎖国",items:[
+      {label:"関ヶ原の戦いが起こる",note:"1600年"},
+      {label:"徳川家康が江戸幕府を開く",note:"1603年"},
+      {label:"島原・天草一揆が起こる",note:"1637年"},
+      {label:"鎖国が完成する",note:"1639年ごろ"}
+    ]},
+    {theme:"鎖国への歩み",items:[
+      {label:"徳川家康が江戸幕府を開く",note:"1603年"},
+      {label:"武家諸法度が定められる",note:"1615年"},
+      {label:"参勤交代が制度化される",note:"1635年"},
+      {label:"ポルトガル船の来航を禁止する",note:"1639年"}
+    ]},
+    {theme:"幕府の確立",items:[
+      {label:"関ヶ原の戦いが起こる",note:"1600年"},
+      {label:"徳川家康が征夷大将軍になる",note:"1603年"},
+      {label:"大阪の陣で豊臣氏がほろびる",note:"1615年"},
+      {label:"徳川家光が参勤交代を制度化する",note:"1635年"}
+    ]},
+    {theme:"経済と都市の発達",items:[
+      {label:"五街道の整備が進む",note:"17世紀前半"},
+      {label:"東廻り・西廻り航路が開かれる",note:"17世紀後半"},
+      {label:"大阪が「天下の台所」として栄える",note:"17世紀後半"},
+      {label:"元禄文化が栄える",note:"17世紀末〜18世紀初め"}
+    ]},
+    {theme:"政治と文化のうつりかわり",items:[
+      {label:"徳川家光が鎖国を完成させる",note:"1639年ごろ"},
+      {label:"徳川綱吉が生類憐みの令を出す",note:"17世紀末"},
+      {label:"元禄文化が栄える",note:"17世紀末〜18世紀初め"},
+      {label:"新井白石が正徳の治を行う",note:"18世紀初め"}
+    ]}
+  ],
+  "江戸時代・後期":[
+    {theme:"三大改革の流れ",items:[
+      {label:"享保の改革が始まる",note:"1716年（徳川吉宗）"},
+      {label:"田沼意次が政治を行う",note:"18世紀後半"},
+      {label:"寛政の改革が始まる",note:"1787年（松平定信）"},
+      {label:"天保の改革が始まる",note:"1841年（水野忠邦）"}
+    ]},
+    {theme:"外国船の接近と対応",items:[
+      {label:"フェートン号事件が起こる",note:"1808年"},
+      {label:"異国船打払令が出される",note:"1825年"},
+      {label:"モリソン号事件が起こる",note:"1837年"},
+      {label:"薪水給与令が出される",note:"1842年"}
+    ]},
+    {theme:"開国から幕府の終わりへ",items:[
+      {label:"ペリーが浦賀に来航する",note:"1853年"},
+      {label:"日米和親条約が結ばれる",note:"1854年"},
+      {label:"日米修好通商条約が結ばれる",note:"1858年"},
+      {label:"大政奉還が行われる",note:"1867年"}
+    ]},
+    {theme:"幕末の動乱",items:[
+      {label:"桜田門外の変が起こる",note:"1860年"},
+      {label:"薩長同盟が結ばれる",note:"1866年"},
+      {label:"大政奉還が行われる",note:"1867年"},
+      {label:"戊辰戦争が起こる",note:"1868年"}
+    ]}
+  ]
+};
+
+/* ============================================================
+   記述問題（用語カードとは別データ）
+   都立傾向：目的・理由・結果を説明させる。指定語句つきが王道。
+   自分で答えを書く → 模範解答とキーワードを見て自己採点。
+   全問・一覧・全時代MIX・黄色い問題数には一切影響しない。
+   ============================================================ */
+const WRITE_QUESTIONS = {
+  "奈良時代":[
+    {q:"奈良時代に墾田永年私財法が出された結果、社会にどのような変化が起こったか。「私有地」「公地公民」の語句を使って説明せよ。",
+     keywords:["私有地","公地公民","貴族や寺社"],
+     model:"開墾した土地の永久私有が認められたため、貴族や寺社が私有地（のちの荘園）を広げ、土地と人民を国家が支配する公地公民の原則がくずれていった。"}
+  ],
+  "平安時代":[
+    {q:"藤原氏はどのようにして政治の実権をにぎったか。「娘」「摂政」「関白」の語句を使って説明せよ。",
+     keywords:["娘","天皇","摂政","関白"],
+     model:"娘を天皇のきさきにし、生まれた子を次の天皇に立てて、天皇が幼いときは摂政、成人後は関白の職について政治の実権をにぎった。"}
+  ],
+  "鎌倉時代":[
+    {q:"鎌倉幕府の将軍と御家人は、どのような関係で結ばれていたか。「御恩」「奉公」の語句を使って説明せよ。",
+     keywords:["御恩","奉公","領地"],
+     model:"将軍は御家人の領地を保護し、新たな領地を与える御恩をあたえ、御家人は将軍に忠誠をちかい、戦いのときに命がけで戦う奉公で応えるという、土地を仲立ちにした主従関係で結ばれていた。"},
+    {q:"元寇の後、御家人の生活が苦しくなったのはなぜか。「恩賞」「分割相続」の語句を使って説明せよ。",
+     keywords:["恩賞","分割相続","負担"],
+     model:"元寇は防衛戦だったため、命がけで戦っても十分な恩賞（新しい領地）が得られず、さらに分割相続のくり返しで領地が細かくなっていたため、御家人の生活は苦しくなった。"}
+  ],
+  "室町時代":[
+    {q:"勘合貿易で、明との貿易船に勘合という合い札を持たせたのはなぜか。「倭寇」の語句を使って説明せよ。",
+     keywords:["倭寇","正式な貿易船","区別"],
+     model:"当時、朝鮮や中国の沿岸を荒らしていた倭寇と、正式な貿易船とを区別するため、正式な船に勘合という合い札を持たせた。"}
+  ],
+  "安土桃山時代":[
+    {q:"織田信長が城下町で楽市・楽座を行ったのは、どのようなねらいからか。「商工業」の語句を使って説明せよ。",
+     keywords:["商工業","税","座","自由"],
+     model:"市場の税を免除し、座の特権を廃止することで、だれもが自由に商売できるようにして、城下町の商工業を活発にするねらいがあった。"},
+    {q:"豊臣秀吉が行った太閤検地と刀狩は、社会にどのような影響をあたえたか。「武士」「百姓」の語句を使って説明せよ。",
+     keywords:["武士","百姓","兵農分離","身分"],
+     model:"検地で百姓を耕作者として土地に登録し、刀狩で百姓から武器を取り上げたことで、武士と百姓の身分の区別がはっきりし、兵農分離が進んだ。"}
+  ],
+  "江戸時代・前期":[
+    {q:"参勤交代の制度は、大名にどのような負担をあたえたか。「江戸」「費用」の語句を使って説明せよ。",
+     keywords:["江戸","費用","往復","財政"],
+     model:"大名は1年おきに江戸と領地を往復し、江戸にも屋敷をかまえて妻子を住まわせたため、往復の費用や江戸での生活費が大きな負担となり、藩の財政を圧迫した。"},
+    {q:"江戸幕府が鎖国を行ったのは、主にどのような目的からか。「キリスト教」の語句を使って説明せよ。",
+     keywords:["キリスト教","禁止","貿易","統制"],
+     model:"幕府の支配のさまたげになるキリスト教の広まりを防ぎ、あわせて貿易の利益と海外の情報を幕府が独占して統制するために、外国との交流を制限した。"}
+  ],
+  "江戸時代・後期":[
+  ]
+};
+
+/* ============================================================
+   時代をまたぐ並び替え問題（全時代MIX専用）
+   都立の大問4は「あるテーマの時代ごとの移り変わり」を並べさせる。
+   文化史・外交史・土地制度史などのテーマで、複数の時代にまたがる。
+   items は正しい年代順で記述（表示時にシャッフル）。
+   ============================================================ */
+const MIX_SORT_QUESTIONS = [
+  {theme:"仏教と寺院のうつりかわり",items:[
+    {label:"聖徳太子が法隆寺を建てる",note:"飛鳥時代・7世紀初め"},
+    {label:"聖武天皇が東大寺の大仏をつくる",note:"奈良時代・8世紀"},
+    {label:"最澄が延暦寺を開く",note:"平安時代初め・9世紀"},
+    {label:"藤原頼通が平等院鳳凰堂を建てる",note:"平安時代後期・11世紀"}
+  ]},
+  {theme:"日本と中国・大陸との交わり",items:[
+    {label:"小野妹子らを遣隋使として送る",note:"飛鳥時代・607年"},
+    {label:"遣唐使を停止する",note:"平安時代・894年"},
+    {label:"平清盛が日宋貿易を行う",note:"平安時代末・12世紀"},
+    {label:"足利義満が勘合貿易を始める",note:"室町時代・1404年"}
+  ]},
+  {theme:"土地と税のしくみのうつりかわり",items:[
+    {label:"班田収授で口分田をあたえる",note:"飛鳥〜奈良時代・大化の改新以降"},
+    {label:"墾田永年私財法で私有を認める",note:"奈良時代・743年"},
+    {label:"太閤検地で石高を定める",note:"安土桃山時代・16世紀末"},
+    {label:"地租改正で地価に応じた税にする",note:"明治時代・1873年"}
+  ]},
+  {theme:"政治の中心にいた人・勢力",items:[
+    {label:"藤原道長が摂関政治の全盛を築く",note:"平安時代・11世紀初め"},
+    {label:"源頼朝が鎌倉幕府を開く",note:"鎌倉時代・1192年"},
+    {label:"足利尊氏が室町幕府を開く",note:"室町時代・14世紀"},
+    {label:"徳川家康が江戸幕府を開く",note:"江戸時代・1603年"}
+  ]},
+  {theme:"武士の登場と成長",items:[
+    {label:"平将門の乱が起こる",note:"平安時代・935年ごろ"},
+    {label:"平清盛が太政大臣になる",note:"平安時代末・1167年"},
+    {label:"承久の乱が起こる",note:"鎌倉時代・1221年"},
+    {label:"応仁の乱が起こる",note:"室町時代・1467年"}
+  ]},
+  {theme:"仏教の新しい教えの広まり",items:[
+    {label:"最澄・空海が新しい仏教を伝える",note:"平安時代初め・9世紀"},
+    {label:"法然が浄土宗を開く",note:"平安末〜鎌倉時代・12世紀"},
+    {label:"親鸞・日蓮らが新しい宗派を開く",note:"鎌倉時代・13世紀"},
+    {label:"一向一揆が各地で起こる",note:"室町時代・15世紀"}
+  ]},
+  {theme:"都（みやこ）のうつりかわり",items:[
+    {label:"藤原京がつくられる",note:"飛鳥時代・694年"},
+    {label:"平城京に都を移す",note:"奈良時代・710年"},
+    {label:"平安京に都を移す",note:"平安時代・794年"},
+    {label:"鎌倉に幕府が置かれる",note:"鎌倉時代・12世紀末"}
+  ]},
+  {theme:"外国との関係の変化（中世〜近世）",items:[
+    {label:"元寇（文永・弘安の役）が起こる",note:"鎌倉時代・13世紀"},
+    {label:"勘合貿易が始まる",note:"室町時代・1404年"},
+    {label:"鉄砲・キリスト教が伝わる",note:"戦国〜安土桃山時代・16世紀半ば"},
+    {label:"鎖国が完成する",note:"江戸時代・17世紀前半"}
+  ]}
+];
+
+let state = { eraIndex:0, mode:"standby", queue:[], pos:0, correct:0, flipped:false, missedByEra:{}, selected:null };
 const $ = s => document.querySelector(s);
 const DRAW = 10;
 
+// 間違えた問題（missedByEra）の永続化。
+// トップ画面に戻ってもアプリを閉じても残す。進捗や時代選択は保存しない。
+const MISSED_KEY = "societas_missed_v1";
+function loadMissed(){
+  try{
+    const raw = localStorage.getItem(MISSED_KEY);
+    if(raw){
+      const data = JSON.parse(raw) || {};
+      // 旧形式（並び替えを疑似カード{q,a,note:"並び替え問題"}で保存していたもの）は
+      // 新フローでは扱えないので取り除く。以後は type:"sort" 形式で貯まる。
+      for(const era in data){
+        if(Array.isArray(data[era])){
+          data[era] = data[era].filter(m=>!(m && m.type!=="sort" && m.note==="並び替え問題"));
+        }
+      }
+      state.missedByEra = data;
+    }
+  }catch(e){ /* localStorageが使えない環境では無視 */ }
+}
+function saveMissed(){
+  try{
+    localStorage.setItem(MISSED_KEY, JSON.stringify(state.missedByEra));
+  }catch(e){ /* 保存に失敗しても動作は続ける */ }
+}
+loadMissed();
+
 // 今選んでいる時代の「間違えた問題」配列を取り出す（なければ作る）
 function curMissed(){
+  if(state.eraIndex===null || state.eraIndex===undefined) return [];
   const era = ERAS[state.eraIndex].era;
   if(!state.missedByEra[era]) state.missedByEra[era] = [];
   return state.missedByEra[era];
@@ -551,10 +1396,15 @@ function renderEras(){
     b.className="era-btn"+(state.eraIndex===i && state.mode!=="mix"?" active":"");
     b.innerHTML=`${e.era}<span class="cnt">${e.cards.length}</span>`;
     b.onclick=()=>{
-      state.eraIndex=i;
-      if(state.mode==="mix"){ start("random"); return; }
-      if(state.mode==="list"){ showList(); }
-      else { start(state.mode==="review"?"random":state.mode); }
+      if(state.eraIndex===i && state.mode!=="mix"){
+        // すでに選ばれている時代をもう一度押したら、未選択に戻す
+        state.eraIndex=null;
+      }else{
+        state.eraIndex=i;
+      }
+      state.selected=null;      // モード選択をリセット
+      state.mode="standby";     // まだ何も始まっていない状態
+      renderEras(); renderModes(); renderStandby();
     };
     box.appendChild(b);
   });
@@ -563,76 +1413,520 @@ function renderEras(){
   const mix=document.createElement("button");
   mix.className="era-btn mix-btn"+(state.mode==="mix"?" active":"");
   mix.innerHTML=`全時代MIX<span class="cnt">${total}</span>`;
-  mix.onclick=()=>startMix();
+  mix.onclick=()=>{
+    if(state.mode==="mix" || state.mode==="mixsort"){
+      // すでに全時代MIXにいるときは、もう一度押すと未選択の初期状態に戻す
+      state.eraIndex=null;
+      state.selected=null;
+      state.mode="standby";
+      renderEras(); renderModes(); renderStandby();
+    }else{
+      startMix();
+    }
+  };
   box.appendChild(mix);
 }
 
 function renderModes(){
   const box=$("#modes"); box.innerHTML="";
+  // 全時代MIXモードのとき：ランダムと並び替えの2つを出す
+  if(state.mode==="mix"){
+    const mixDefs=[
+      {key:"mixrandom",label:`ランダム`},
+      {key:"mixsort",label:"並び替え問題"}
+    ];
+    mixDefs.forEach(d=>{
+      const b=document.createElement("button");
+      b.className="mode-btn"+(d.key==="mixsort"?" sort-btn":"")+(state.selected===d.key?" active":"");
+      b.textContent=d.label;
+      b.onclick=()=>{ state.selected = (state.selected===d.key ? null : d.key); renderModes(); renderMixStandby(); };  // トグル
+      box.appendChild(b);
+    });
+    return;
+  }
+  // 時代が選ばれていないときは、モードボタンを出さない
+  if(state.eraIndex===null || state.eraIndex===undefined){ return; }
   const cur=ERAS[state.eraIndex];
   const defs=[
     {key:"random",label:`ランダム${DRAW}問`},
-    {key:"all",label:`全問（${cur.cards.length}問）`},
+    {key:"all",label:"全問"},
     {key:"list",label:"一覧で見る"}
   ];
   defs.forEach(d=>{
     const b=document.createElement("button");
-    b.className="mode-btn"+(state.mode===d.key?" active":"");
+    b.className="mode-btn"+(state.selected===d.key?" active":"");
     b.textContent=d.label;
-    b.onclick=()=> d.key==="list" ? showList() : start(d.key);
+    if(d.key==="list"){
+      b.onclick=()=>{
+        if(state.selected==="list"){ state.selected=null; renderModes(); renderStandby(); }  // もう一度押したら待機画面へ
+        else { showList(); }
+      };
+    }else{
+      b.onclick=()=>{ state.selected = (state.selected===d.key ? null : d.key); renderModes(); renderStandby(); };  // トグル
+    }
     box.appendChild(b);
+    // ランダム10問の「隣」に並び替え問題ボタンを差し込む（その時代に問題がある場合のみ）
+    if(d.key==="random" && SORT_QUESTIONS[cur.era] && SORT_QUESTIONS[cur.era].length){
+      const s=document.createElement("button");
+      s.className="mode-btn sort-btn"+(state.selected==="sort"?" active":"");
+      s.textContent="並び替え問題";
+      s.onclick=()=>{ state.selected = (state.selected==="sort" ? null : "sort"); renderModes(); renderStandby(); };  // トグル
+      box.appendChild(s);
+    }
+    // 「並び替え問題」と「全問」の間に記述問題ボタンを差し込む（その時代に問題がある場合のみ）
+    if(d.key==="random" && WRITE_QUESTIONS[cur.era] && WRITE_QUESTIONS[cur.era].length){
+      const w=document.createElement("button");
+      w.className="mode-btn write-btn"+(state.selected==="write"?" active":"");
+      w.textContent="記述問題";
+      w.onclick=()=>{ state.selected = (state.selected==="write" ? null : "write"); renderModes(); renderStandby(); };  // トグル
+      box.appendChild(w);
+    }
   });
   const n=curMissed().length;
   const r=document.createElement("button");
   r.className="mode-btn review-btn"+(n?" has":"")+(state.mode==="review"?" active":"");
   r.innerHTML=`間違えた問題<span class="cnt">${n}</span>`;
-  r.onclick=()=>{if(n)startReview();};
+  r.onclick=()=>{
+    if(state.mode==="review"){ backToStandby(); }   // もう一度押したら待機画面へ
+    else if(n){ startReview(); }
+  };
   box.appendChild(r);
 }
 
-function start(mode){
-  state.mode=mode;
+/* 「モードを選び直す」→ 選択をリセットして待機画面に戻る */
+function backToStandby(){
+  state.selected=null;
+  state.mode="standby";
+  renderEras(); renderModes(); renderStandby();
+}
+
+/* 待機画面：時代名を大きく表示。モード選択後はSTARTボタンを出す */
+function renderStandby(){
+  // 時代がまだ選ばれていない場合
+  if(state.eraIndex===null || state.eraIndex===undefined){
+    $("#modeLabel").textContent="—";
+    $("#progress").textContent="—";
+    $("#barFill").style.width="0%";
+    $("#main").innerHTML=`<div class="standby">
+      <div class="standby-era">HISTORIA</div>
+      <div class="standby-hint">時代を選んでください</div>
+    </div>`;
+    return;
+  }
   const cur=ERAS[state.eraIndex];
+  const modeLabels={random:`ランダム${DRAW}問`, all:"全問", sort:"並び替え問題", write:"記述問題"};
+  const selected=state.selected;
+  $("#modeLabel").textContent = selected ? `${cur.era}：${modeLabels[selected]}` : cur.era;
+  $("#progress").textContent="—";
+  $("#barFill").style.width="0%";
+
+  let html=`<div class="standby">
+    <div class="standby-era">${cur.era}</div>`;
+  if(selected){
+    html+=`<div class="standby-mode">${modeLabels[selected]}</div>
+      <button class="standby-start" id="standbyStart">START</button>`;
+  }else{
+    html+=`<div class="standby-hint">出題モードをえらんでください</div>`;
+  }
+  html+=`</div>`;
+  $("#main").innerHTML=html;
+
+  if(selected){
+    $("#standbyStart").onclick=()=>{
+      if(selected==="sort"){ startSort(); }
+      else if(selected==="write"){ startWrite(); }
+      else { start(selected); }   // random / all
+    };
+  }
+}
+
+function start(mode){
+  const cur=ERAS[state.eraIndex];
+  if(!cur.cards || cur.cards.length===0){
+    // カードがまだ無い時代（作成途中）はクラッシュさせず待機画面のまま知らせる
+    $("#main").innerHTML=`<div class="standby"><div class="standby-era">${cur.era}</div><div class="standby-hint">この時代の用語カードは準備中です</div></div>`;
+    return;
+  }
+  state.mode=mode;
+  state.selected=mode;
   let cards=shuffle(cur.cards);
   if(mode==="random") cards=cards.slice(0,Math.min(DRAW,cur.cards.length));
   state.queue=cards.map(c=>({...c, era:cur.era}));
   begin((mode==="random"?`ランダム${state.queue.length}問`:"全問")+`｜${cur.era}`);
 }
 
+/* ============================================================
+   記述問題（都立頻出の説明記述）
+   自分で答えを書く → 模範解答＋キーワードを見て自己採点。
+   用語カードとは別データ。既存機能には干渉しない。
+   ============================================================ */
+let writeState = null;
+
+function startWrite(){
+  const cur=ERAS[state.eraIndex];
+  const qs = WRITE_QUESTIONS[cur.era];
+  if(!qs || !qs.length) return;
+  state.mode="write";
+  state.selected="write";
+  writeState = {
+    queue: shuffle(qs.map(q=>({...q, era:cur.era}))),
+    pos: 0
+  };
+  $("#modeLabel").textContent=`記述問題｜${cur.era}`;
+  renderEras(); renderModes();
+  renderWrite();
+}
+
+function renderWrite(){
+  const q = writeState.queue[writeState.pos];
+  const total = writeState.queue.length;
+  $("#progress").textContent=`${writeState.pos+1} / ${total}`;
+  $("#barFill").style.width=(writeState.pos/total*100)+"%";
+  $("#main").innerHTML=`
+    <div class="write-wrap">
+      <div class="write-head">
+        <div class="write-era">${q.era}</div>
+        <div class="write-q">${q.q}</div>
+      </div>
+      <textarea class="write-input" id="writeInput" placeholder="回答を入力" rows="4"></textarea>
+      <button class="write-submit" id="writeSubmit">回答する</button>
+    </div>`;
+  $("#writeSubmit").onclick=()=>showWriteAnswer();
+}
+
+function showWriteAnswer(){
+  const q = writeState.queue[writeState.pos];
+  const myAnswer = ($("#writeInput").value || "").trim();
+  const kwChips = q.keywords.map(k=>`<span class="kw-chip">${k}</span>`).join("");
+  $("#main").innerHTML=`
+    <div class="write-result">
+      <div class="write-q small">${q.q}</div>
+
+      <div class="write-block">
+        <div class="write-label">あなたの答え</div>
+        <div class="write-mine">${myAnswer ? escapeHtml(myAnswer) : "（未記入）"}</div>
+      </div>
+
+      <div class="write-block">
+        <div class="write-label gold">都立の模範解答</div>
+        <div class="write-model">${q.model}</div>
+      </div>
+
+      <div class="write-block">
+        <div class="write-label">入っているとよいキーワード</div>
+        <div class="kw-list">${kwChips}</div>
+        <div class="write-hint">この語句が自分の答えに入っているか、見くらべてみよう。</div>
+      </div>
+
+      <div class="write-actions">
+        <button class="write-next" id="writeNext">次へ</button>
+        <button class="write-again secondary" id="writeReview">もう一度この問題を書く</button>
+      </div>
+    </div>`;
+  $("#writeNext").onclick=()=>{
+    writeState.pos++;
+    if(writeState.pos>=writeState.queue.length){ finishWrite(); }
+    else { renderWrite(); }
+  };
+  $("#writeReview").onclick=()=>renderWrite();
+}
+
+function finishWrite(){
+  const total=writeState.queue.length;
+  const cur=ERAS[state.eraIndex];
+  $("#barFill").style.width="100%";
+  $("#progress").textContent="完了";
+  $("#main").innerHTML=`
+    <div class="done">
+      <h2>おつかれさま！</h2>
+      <p>${cur.era}の記述問題（${total}問）を書き終えました。<br>模範解答と見くらべて、キーワードが入っていたか確認しよう。</p>
+      <div>
+        <button onclick="startWrite()">もう一度 記述問題</button>
+        <button class="secondary" onclick="backToStandby()">モードを選び直す</button>
+      </div>
+    </div>`;
+  renderModes();
+}
+
+/* ============================================================
+   並び替え問題（A案：時代内で4つの出来事を古い順に並べる）
+   用語カードとは別データ。間違えたら「間違えた問題」に入れる。
+   ============================================================ */
+let sortState = null;
+
+function startSort(){
+  const cur=ERAS[state.eraIndex];
+  const qs = SORT_QUESTIONS[cur.era];
+  if(!qs || !qs.length) return;
+  state.mode="sort";
+  state.selected="sort";
+  // この時代の並び替え問題をシャッフルして順に出す
+  sortState = {
+    queue: shuffle(qs.map(q=>({...q, era:cur.era}))),
+    pos: 0,
+    correct: 0
+  };
+  $("#modeLabel").textContent=`並び替え問題｜${cur.era}`;
+  renderEras(); renderModes();
+  renderSort();
+}
+
+/* 時代をまたぐ並び替え（全時代MIX専用） */
+function startMixSort(){
+  state.mode="mixsort";
+  state.selected="mixsort";
+  sortState = {
+    queue: shuffle(MIX_SORT_QUESTIONS.map(q=>({...q, isMix:true}))),
+    pos: 0,
+    correct: 0
+  };
+  $("#modeLabel").textContent="並び替え問題｜全時代MIX";
+  renderEras(); renderModes();
+  renderSort();
+}
+
+function renderSort(){
+  const q = sortState.queue[sortState.pos];
+  const total = sortState.queue.length;
+  $("#progress").textContent=`${sortState.pos+1} / ${total}`;
+  $("#barFill").style.width=(sortState.pos/total*100)+"%";
+  // 選択肢をシャッフルして表示（正しい順は items の並び）
+  const shuffled = shuffle(q.items.map((it,idx)=>({...it, origIndex:idx})));
+  // ユーザーが選んだ順を入れる配列
+  sortState.picked = [];
+  sortState.shuffled = shuffled;
+
+  let html=`<div class="sort-wrap">
+    <div class="sort-head">
+      <div class="sort-era">${q.isMix ? "全時代" : q.era} · ${q.theme}</div>
+      <div class="sort-inst">古いものから順にタップしてください</div>
+    </div>
+    <div class="sort-slots" id="sortSlots"></div>
+    <div class="sort-choices" id="sortChoices"></div>
+    <button class="sort-reset" id="sortReset">やり直す</button>
+    <button class="sort-reset" id="sortReveal">答えを見る</button>
+    <button class="sort-reset" id="sortSkip">次の問題</button>
+  </div>`;
+  $("#main").innerHTML=html;
+
+  renderSortSlots();
+  renderSortChoices();
+  $("#sortReset").onclick=()=>{ sortState.picked=[]; renderSortSlots(); renderSortChoices(); };
+  $("#sortReveal").onclick=()=>{ showSortAnswer(); };   // 判定せず答えだけ表示
+  $("#sortSkip").onclick=()=>{ gotoNextSort(); };       // 飛ばす（間違い扱いにしない）
+}
+
+// 判定せずに正しい順番だけを見せる（間違え箱に入れない）
+function showSortAnswer(){
+  const q = sortState.queue[sortState.pos];
+  const rows = q.items.map((it,i)=>
+    `<div class="sort-ans-row"><span class="sort-num">${i+1}</span><span>${it.label}</span><span class="sort-ans-note">${it.note}</span></div>`
+  ).join("");
+  $("#main").innerHTML=`
+    <div class="sort-result">
+      <div class="sort-ans-title">正しい順番</div>
+      <div class="sort-ans-list">${rows}</div>
+      <div class="sort-result-btns">
+        <button class="sort-next secondary" id="sortBack">問題に戻る</button>
+        <button class="sort-next" id="sortNext">次の問題</button>
+      </div>
+    </div>`;
+  $("#sortBack").onclick=()=>{ renderSort(); };   // 同じ問題をやり直す
+  $("#sortNext").onclick=()=>{ gotoNextSort(); };
+}
+
+// 次の問題へ進む（判定なし・間違い扱いにしない）
+function gotoNextSort(){
+  sortState.pos++;
+  renderModes();
+  if(sortState.pos>=sortState.queue.length){ finishSort(); }
+  else { renderSort(); }
+}
+
+function renderSortSlots(){
+  const slots=$("#sortSlots"); slots.innerHTML="";
+  const total=sortState.shuffled.length;
+  for(let i=0;i<total;i++){
+    const div=document.createElement("div");
+    div.className="sort-slot";
+    const picked = sortState.picked[i];
+    if(picked!==undefined){
+      const it = sortState.shuffled[picked];
+      div.innerHTML=`<span class="sort-num">${i+1}</span><span class="sort-slot-label">${it.label}</span>`;
+      div.classList.add("filled");
+      div.onclick=()=>{ // タップで取り消し（最後のものだけ戻せる簡易仕様）
+        sortState.picked.splice(i,1);
+        renderSortSlots(); renderSortChoices();
+      };
+    }else{
+      div.innerHTML=`<span class="sort-num">${i+1}</span><span class="sort-slot-empty">？</span>`;
+    }
+    slots.appendChild(div);
+  }
+}
+
+function renderSortChoices(){
+  const box=$("#sortChoices"); box.innerHTML="";
+  sortState.shuffled.forEach((it,idx)=>{
+    if(sortState.picked.includes(idx)) return; // すでに選ばれたものは出さない
+    const b=document.createElement("button");
+    b.className="sort-choice";
+    b.textContent=it.label;
+    b.onclick=()=>{
+      sortState.picked.push(idx);
+      renderSortSlots(); renderSortChoices();
+      // 全部埋まったら自動で判定
+      if(sortState.picked.length===sortState.shuffled.length){
+        setTimeout(judgeSort, 300);
+      }
+    };
+    box.appendChild(b);
+  });
+}
+
+function judgeSort(){
+  const q = sortState.queue[sortState.pos];
+  // ユーザーが選んだ順（origIndex）が 0,1,2,3... になっていれば正解
+  const userOrder = sortState.picked.map(i=>sortState.shuffled[i].origIndex);
+  const correct = userOrder.every((v,idx)=>v===idx);
+
+  if(correct){
+    sortState.correct++;
+  }else{
+    // 間違えたら「間違えた問題」に、並び替え問題そのままの形式で入れる。
+    // type:"sort" で用語カードと区別し、解き直しは並び替えUIで出す。
+    // 時代またぎ（isMix）の場合は "全時代MIX" の箱に入れる。
+    const era = q.isMix ? "全時代MIX" : q.era;
+    if(!state.missedByEra[era]) state.missedByEra[era]=[];
+    const already = state.missedByEra[era].some(m=>m.type==="sort" && m.theme===q.theme && m.era===(q.era||era));
+    if(!already){
+      state.missedByEra[era].push({
+        type:"sort",
+        theme:q.theme,
+        items:q.items.map(it=>({...it})),
+        era:q.era||era,
+        isMix:!!q.isMix
+      });
+    }
+    saveMissed();
+  }
+  showSortResult(correct);
+}
+
+function showSortResult(correct){
+  const q = sortState.queue[sortState.pos];
+  const rows = q.items.map((it,i)=>
+    `<div class="sort-ans-row"><span class="sort-num">${i+1}</span><span>${it.label}</span><span class="sort-ans-note">${it.note}</span></div>`
+  ).join("");
+  $("#main").innerHTML=`
+    <div class="sort-result">
+      <div class="sort-verdict ${correct?'ok':'ng'}">${correct?"正解！":"おしい！"}</div>
+      <div class="sort-ans-title">正しい順番</div>
+      <div class="sort-ans-list">${rows}</div>
+      <button class="sort-next" id="sortNext">次へ</button>
+    </div>`;
+  $("#sortNext").onclick=()=>{
+    sortState.pos++;
+    renderModes();
+    if(sortState.pos>=sortState.queue.length){ finishSort(); }
+    else { renderSort(); }
+  };
+}
+
+function finishSort(){
+  const total=sortState.queue.length;
+  const pct=Math.round(sortState.correct/total*100);
+  $("#barFill").style.width="100%";
+  $("#progress").textContent="完了";
+
+  // 時代またぎ（全時代MIX）の場合
+  if(state.mode==="mixsort"){
+    const box = state.missedByEra["全時代MIX"];
+    const missNow = box ? box.length : 0;
+    $("#main").innerHTML=`
+      <div class="done">
+        <h2>おつかれさま！</h2>
+        <div class="score">${sortState.correct} / ${total}</div>
+        <p>並び替え問題 正解率 ${pct}%${missNow?` ・ 全時代MIXの解き直し待ち ${missNow}問`:""}</p>
+        <div>
+          <button onclick="startMixSort()">もう一度 並び替え問題</button>
+          <button class="secondary" onclick="startMix()">モードを選び直す</button>
+        </div>
+      </div>`;
+    renderModes();
+    return;
+  }
+
+  const cur=ERAS[state.eraIndex];
+  const missNow=curMissed().length;
+  $("#main").innerHTML=`
+    <div class="done">
+      <h2>おつかれさま！</h2>
+      <div class="score">${sortState.correct} / ${total}</div>
+      <p>並び替え問題 正解率 ${pct}%${missNow?` ・ ${cur.era}の解き直し待ち ${missNow}問`:""}</p>
+      <div>
+        <button onclick="startSort()">もう一度 並び替え問題</button>
+        <button class="secondary" onclick="backToStandby()">モードを選び直す</button>
+      </div>
+    </div>`;
+  renderModes();
+}
+
 /* 全時代MIX：画面内の入力欄で出題数を決める（promptは環境により使えないため） */
 function startMix(){
   state.mode="mix";
-  const max = ERAS.reduce((s,e)=>s+e.cards.length,0);
-  $("#modeLabel").textContent="全時代MIX";
-  $("#progress").textContent=`全${max}問`;
+  state.eraIndex=null;     // 時代選択は解除
+  state.selected=null;     // モード未選択の状態から
+  renderEras(); renderModes(); renderMixStandby();
+}
+
+/* 全時代MIXの待機画面：ランダム／並び替えを選ぶ */
+function renderMixStandby(){
+  const selected=state.selected;
+  const modeLabels={mixrandom:"ランダム", mixsort:"並び替え問題"};
+  $("#modeLabel").textContent = selected ? `全時代MIX：${modeLabels[selected]}` : "全時代MIX";
+  $("#progress").textContent="—";
   $("#barFill").style.width="0%";
-  renderEras(); renderModes();
-  $("#main").innerHTML=`
-    <div class="mix-setup">
-      <h2>全時代MIX</h2>
-      <p>全ての時代（合計 ${max}問）から、指定した数だけランダムに出題します。</p>
+
+  let html=`<div class="standby">
+    <div class="standby-era">全時代MIX</div>`;
+  if(selected==="mixrandom"){
+    // 従来のランダム（問題数入力）
+    const max = ERAS.reduce((s,e)=>s+e.cards.length,0);
+    html+=`<div class="standby-mode">ランダム</div>
       <div class="mix-row">
         <label for="mixNum">出題数</label>
         <input id="mixNum" type="number" min="1" max="${max}" value="20" inputmode="numeric">
         <span class="mix-max">/ ${max}</span>
       </div>
       <div class="mix-quick" id="mixQuick"></div>
-      <button class="mix-start" id="mixStart">この問題数で始める</button>
-    </div>`;
-  // クイック選択ボタン（よく使う数をワンタップで）
-  const quick = [10,20,30,50].filter(v=>v<=max).concat([max]);
-  const uniq = [...new Set(quick)];
-  const qbox = $("#mixQuick");
-  uniq.forEach(v=>{
-    const b=document.createElement("button");
-    b.className="mix-chip";
-    b.textContent = v===max ? `全${v}` : `${v}`;
-    b.onclick=()=>{ $("#mixNum").value = v; };
-    qbox.appendChild(b);
-  });
-  $("#mixStart").onclick=()=>runMix();
-  // Enterキーでも開始できるように
-  $("#mixNum").addEventListener("keydown", e=>{ if(e.key==="Enter") runMix(); });
+      <button class="mix-start" id="mixStart">この問題数で始める</button>`;
+  }else if(selected==="mixsort"){
+    html+=`<div class="standby-mode">並び替え問題</div>
+      <button class="standby-start" id="mixSortStart">START</button>`;
+  }else{
+    html+=`<div class="standby-hint">出題モードをえらんでください</div>`;
+  }
+  html+=`</div>`;
+  $("#main").innerHTML=html;
+
+  if(selected==="mixrandom"){
+    const max = ERAS.reduce((s,e)=>s+e.cards.length,0);
+    const quick=[...new Set([10,20,30,50].filter(v=>v<=max).concat([max]))];
+    const qbox=$("#mixQuick");
+    quick.forEach(v=>{
+      const b=document.createElement("button");
+      b.className="mix-chip";
+      b.textContent = v===max ? `全${v}` : `${v}`;
+      b.onclick=()=>{ $("#mixNum").value=v; };
+      qbox.appendChild(b);
+    });
+    $("#mixStart").onclick=()=>runMix();
+    $("#mixNum").addEventListener("keydown", e=>{ if(e.key==="Enter") runMix(); });
+  }
+  if(selected==="mixsort"){
+    $("#mixSortStart").onclick=()=>startMixSort();
+  }
 }
 
 function runMix(){
@@ -647,41 +1941,258 @@ function runMix(){
   begin(`全時代MIX ${num}問`);
 }
 
+/* ========== 間違えた問題の解き直し（統一フロー） ==========
+   箱には用語カード（type未設定）と並び替え（type:"sort"）が混在する。
+   1本のキューにして、要素ごとに種別を見てUIを出し分ける。
+   正解したものだけ箱から取り除く。 */
+let reviewState = null;
 function startReview(){
   state.mode="review";
   const cur=ERAS[state.eraIndex];
-  state.queue=shuffle(curMissed().map(m=>({...m})));
-  begin(`間違えた問題の解き直し｜${cur.era}`);
+  reviewState = {
+    era: cur.era,
+    queue: shuffle(curMissed().map(m=>({...m}))),
+    pos: 0,
+    correct: 0
+  };
+  state.queue = reviewState.queue;   // 進捗表示の分母などで参照される
+  $("#modeLabel").textContent = `間違えた問題の解き直し｜${cur.era}`;
+  renderEras(); renderModes();
+  renderReviewItem();
+}
+
+// キューの現在位置の1問を、種別に応じて表示する
+function renderReviewItem(){
+  const total = reviewState.queue.length;
+  if(reviewState.pos >= total){ finishReview(); return; }
+  $("#progress").textContent = `${reviewState.pos+1} / ${total}`;
+  $("#barFill").style.width = (reviewState.pos/total*100)+"%";
+  const item = reviewState.queue[reviewState.pos];
+  if(item.type==="sort"){ renderReviewSort(item); }
+  else { renderReviewCard(item); }
+}
+
+// 解き直し中に、正解した1問を箱から取り除く
+function removeFromMissed(item){
+  const era = reviewState.era;
+  const box = state.missedByEra[era];
+  if(!box) return;
+  if(item.type==="sort"){
+    state.missedByEra[era] = box.filter(m=>!(m.type==="sort" && m.theme===item.theme && m.era===item.era));
+  }else{
+    state.missedByEra[era] = box.filter(m=>!(m.type!=="sort" && m.q===item.q && m.a===item.a));
+  }
+  saveMissed();
+  renderModes();
+}
+
+// 次の問題へ進む（正誤に関わらず呼ぶ）
+function reviewNext(){
+  reviewState.pos++;
+  renderReviewItem();
+}
+
+// --- 用語カードの解き直し ---
+function renderReviewCard(card){
+  const html=`
+    <div class="stage">
+      <div class="card" id="reviewCard">
+        <div class="face front">
+          <div class="eyebrow">${card.era||""}${card.group?" · "+card.group:""}</div>
+          <div class="body"><div class="q-text">${card.q}</div></div>
+          <div class="hint-flip">タップで答えを見る</div>
+        </div>
+        <div class="face back">
+          <div class="eyebrow">こたえ</div>
+          <div class="body"><div class="a-text">${card.a}</div></div>
+          ${card.note?`<div class="note">${card.note}</div>`:""}
+        </div>
+      </div>
+    </div>
+    <div class="judge">
+      <button class="miss" id="rvMiss">まだ覚えてない</button>
+      <button class="ok" id="rvOk">覚えた</button>
+    </div>`;
+  $("#main").innerHTML=html;
+  let flipped=false;
+  const c=$("#reviewCard");
+  c.onclick=()=>{ flipped=!flipped; c.classList.toggle("flip",flipped); };
+  $("#rvMiss").onclick=()=>{ reviewNext(); };                 // まだ→箱に残す
+  $("#rvOk").onclick=()=>{ reviewState.correct++; removeFromMissed(card); reviewNext(); };  // 覚えた→箱から消す
+}
+
+// --- 並び替えの解き直し（通常の並び替えと同じUI） ---
+function renderReviewSort(item){
+  const shuffled = shuffle(item.items.map((it,idx)=>({...it, origIndex:idx})));
+  const rs = { item, shuffled, picked:[] };
+
+  const html=`<div class="sort-wrap">
+    <div class="sort-head">
+      <div class="sort-era">${item.isMix ? "全時代" : item.era} · ${item.theme}</div>
+      <div class="sort-inst">古いものから順にタップしてください</div>
+    </div>
+    <div class="sort-slots" id="rvSortSlots"></div>
+    <div class="sort-choices" id="rvSortChoices"></div>
+    <button class="sort-reset" id="rvSortReset">やり直す</button>
+  </div>`;
+  $("#main").innerHTML=html;
+
+  function drawSlots(){
+    const box=$("#rvSortSlots"); box.innerHTML="";
+    const total=rs.shuffled.length;
+    for(let i=0;i<total;i++){
+      const picked=rs.picked[i];
+      const slot=document.createElement("div");
+      slot.className="sort-slot"+(picked!==undefined?" filled":"");
+      if(picked!==undefined){
+        const it=rs.shuffled[picked];
+        slot.innerHTML=`<span class="sort-num">${i+1}</span><span class="sort-slot-label">${it.label}</span>`;
+        slot.onclick=()=>{ rs.picked.splice(i,1); drawSlots(); drawChoices(); };
+      }else{
+        slot.innerHTML=`<span class="sort-num">${i+1}</span><span class="sort-slot-empty">？</span>`;
+      }
+      box.appendChild(slot);
+    }
+  }
+  function drawChoices(){
+    const box=$("#rvSortChoices"); box.innerHTML="";
+    rs.shuffled.forEach((it,idx)=>{
+      if(rs.picked.includes(idx)) return;
+      const b=document.createElement("button");
+      b.className="sort-choice";
+      b.textContent=it.label;
+      b.onclick=()=>{
+        rs.picked.push(idx);
+        drawSlots(); drawChoices();
+        if(rs.picked.length===rs.shuffled.length){ setTimeout(()=>judgeReviewSort(rs), 300); }
+      };
+      box.appendChild(b);
+    });
+  }
+  $("#rvSortReset").onclick=()=>{ rs.picked=[]; drawSlots(); drawChoices(); };
+  drawSlots(); drawChoices();
+}
+
+function judgeReviewSort(rs){
+  const userOrder = rs.picked.map(i=>rs.shuffled[i].origIndex);
+  const correct = userOrder.every((v,idx)=>v===idx);
+  if(correct){ reviewState.correct++; removeFromMissed(rs.item); }
+  // 正しい順番を見せる
+  const rows = rs.item.items.map((it,i)=>
+    `<div class="sort-ans-row"><span class="sort-num">${i+1}</span><span>${it.label}</span><span class="sort-ans-note">${it.note}</span></div>`
+  ).join("");
+  $("#main").innerHTML=`
+    <div class="sort-result">
+      <div class="sort-verdict ${correct?'ok':'ng'}">${correct?"正解！":"おしい！"}</div>
+      <div class="sort-ans-title">正しい順番</div>
+      <div class="sort-ans-list">${rows}</div>
+      <button class="sort-next" id="rvSortNext">次へ</button>
+    </div>`;
+  $("#rvSortNext").onclick=()=>{ reviewNext(); };
+}
+
+function finishReview(){
+  const cur=ERAS[state.eraIndex];
+  const total=reviewState.queue.length;
+  const pct=total?Math.round(reviewState.correct/total*100):0;
+  const missNow=curMissed().length;
+  $("#barFill").style.width="100%";
+  $("#progress").textContent="完了";
+  $("#main").innerHTML=`
+    <div class="done">
+      <h2>おつかれさま！</h2>
+      <div class="score">${reviewState.correct} / ${total}</div>
+      <p>正解率 ${pct}%${missNow?` ・ ${cur.era}の解き直し待ち ${missNow}問`:" ・ この時代はクリア！"}</p>
+      <div>
+        ${missNow?`<button onclick="startReview()">間違えた問題をもう一度</button>`:""}
+        <button onclick="start('random')">ランダム10問</button>
+        <button class="secondary" onclick="backToStandby()">モードを選び直す</button>
+      </div>
+    </div>`;
+  renderModes();
 }
 
 /* 一覧表示：その時代の全カードを、グループごとに問題文＋答えで並べる */
 function showList(){
   state.mode="list";
+  state.selected="list";
   const cur=ERAS[state.eraIndex];
   $("#modeLabel").textContent="一覧｜"+cur.era;
   $("#progress").textContent=`${cur.cards.length}問`;
   $("#barFill").style.width="100%";
   renderEras(); renderModes();
 
+  // 枠＋固定検索バー＋結果コンテナを一度だけ描画
+  $("#main").innerHTML=`
+    <div class="list-wrap searchable">
+      <div class="list-search">
+        <input id="listSearch" type="text" placeholder="用語で検索（例：徳川家康）" autocomplete="off">
+        <button class="clear" id="listSearchClear">クリア</button>
+      </div>
+      <div class="list-results" id="listResults"></div>
+    </div>`;
+
+  const input=$("#listSearch");
+  input.addEventListener("input", ()=> renderListResults(input.value));
+  $("#listSearchClear").onclick=()=>{ input.value=""; renderListResults(""); input.focus(); };
+  renderListResults("");   // 最初は全件表示
+}
+
+// HTMLエスケープ（用語に < > & が無くても安全側で）
+function escapeHtml(s){
+  return String(s).replace(/[&<>"]/g, ch=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[ch]));
+}
+// キーワード部分を強調表示（大文字小文字は区別しない）
+function highlight(text, kw){
+  const safe=escapeHtml(text);
+  if(!kw) return safe;
+  const safeKw=escapeHtml(kw);
+  // 正規表現の特殊文字をエスケープ
+  const pat=safeKw.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  try{
+    return safe.replace(new RegExp(pat, "gi"), m=>`<span class="list-hit">${m}</span>`);
+  }catch(e){ return safe; }
+}
+
+// 検索キーワードで絞り込んで結果だけ再描画する
+function renderListResults(keyword){
+  const cur=ERAS[state.eraIndex];
+  const kw=(keyword||"").trim();
+  const kwLower=kw.toLowerCase();
+  const matched = cur.cards.filter(c=>{
+    if(!kw) return true;
+    return (c.q+" "+c.a).toLowerCase().includes(kwLower);
+  });
+
+  const box=$("#listResults");
+  if(!box) return;
+
+  if(matched.length===0){
+    box.innerHTML=`<div class="list-empty">「${escapeHtml(kw)}」を含む問題は見つかりませんでした</div>`;
+    $("#progress").textContent="0問";
+    return;
+  }
+
   // グループごとにまとめる（データの並び順を保つ）
-  const groups=[];
-  const map={};
-  cur.cards.forEach(c=>{
+  const groups=[]; const map={};
+  matched.forEach(c=>{
     const g=c.group||"その他";
     if(!map[g]){ map[g]={name:g,items:[]}; groups.push(map[g]); }
     map[g].items.push(c);
   });
 
-  let html='<div class="list-wrap">';
+  let html="";
   groups.forEach(g=>{
-    html+=`<div class="list-group"><div class="list-group-head">${g.name}</div>`;
+    html+=`<div class="list-group"><div class="list-group-head">${escapeHtml(g.name)}</div>`;
     g.items.forEach(c=>{
-      html+=`<div class="list-item"><div class="list-q">${c.q}</div><div class="list-a">${c.a}</div></div>`;
+      html+=`<div class="list-item"><div class="list-q">${highlight(c.q,kw)}</div><div class="list-a">${highlight(c.a,kw)}</div></div>`;
     });
-    html+='</div>';
+    html+="</div>";
   });
-  html+=`<div class="list-count">全 ${cur.cards.length} 問</div></div>`;
-  $("#main").innerHTML=html;
+  const label = kw ? `該当 ${matched.length} 問 / 全 ${cur.cards.length} 問` : `全 ${cur.cards.length} 問`;
+  html+=`<div class="list-count">${label}</div>`;
+  box.innerHTML=html;
+  $("#progress").textContent=`${matched.length}問`;
 }
 
 function begin(label){
@@ -711,16 +2222,14 @@ function renderCard(){
       </div>
     </div>
     <div class="judge">
-      <button class="miss" id="btnMiss" disabled>まだ覚えてない</button>
-      <button class="ok" id="btnOk" disabled>覚えた</button>
+      <button class="miss" id="btnMiss">まだ覚えてない</button>
+      <button class="ok" id="btnOk">覚えた</button>
     </div>`;
   state.flipped=false;
   const card=$("#card");
   card.onclick=()=>{
     state.flipped=!state.flipped;
     card.classList.toggle("flip",state.flipped);
-    $("#btnMiss").disabled=!state.flipped;
-    $("#btnOk").disabled=!state.flipped;
   };
   $("#btnMiss").onclick=()=>judge(false,c);
   $("#btnOk").onclick=()=>judge(true,c);
@@ -743,6 +2252,7 @@ function judge(ok,card){
       box.push({...card});
     }
   }
+  saveMissed();
   // 「間違えた問題」ボタンのカウント表示をその場で更新する
   renderModes();
   state.pos++;
@@ -768,7 +2278,7 @@ function finish(){
         <p>正解率 ${pct}%${totalMiss?` ・ 間違えた問題は各時代にたまっています（合計 ${totalMiss}問）`:" ・ 全問正解！"}</p>
         <div>
           <button onclick="startMix()">もう一度ミックス</button>
-          <button class="secondary" onclick="renderModes()">モードを選び直す</button>
+          <button class="secondary" onclick="backToStandby()">モードを選び直す</button>
         </div>
       </div>`;
     renderEras(); renderModes();
@@ -785,15 +2295,806 @@ function finish(){
       <div>
         ${missNow?`<button onclick="startReview()">間違えた問題を解き直す</button>`:""}
         <button onclick="start('random')">もう一度ランダム10問</button>
-        <button class="secondary" onclick="renderModes()">モードを選び直す</button>
+        <button class="secondary" onclick="backToStandby()">モードを選び直す</button>
       </div>
     </div>`;
   renderModes();
 }
 
-renderEras();
-renderModes();
-start("random");
+/* ========== 画面の切り替え ========== */
+function hideAllScreens(){
+  document.getElementById("homeScreen").style.display="none";
+  document.getElementById("soonScreen").style.display="none";
+  document.getElementById("historyApp").style.display="none";
+  document.getElementById("sophiaScreen").style.display="none";
+}
+function setSettingsBtn(show){
+  const b=document.getElementById("settingsBtn");
+  if(b) b.style.display = show ? "flex" : "none";
+}
+function showHome(){
+  hideAllScreens();
+  document.getElementById("homeScreen").style.display="";
+  setSettingsBtn(true);   // 設定ボタンはトップ画面だけ表示
+  window.scrollTo(0,0);
+}
+function showSoon(label){
+  hideAllScreens();
+  document.getElementById("soonLabel").textContent=label;
+  document.getElementById("soonScreen").style.display="";
+  setSettingsBtn(false);
+  window.scrollTo(0,0);
+}
+function showHistory(){
+  hideAllScreens();
+  setSettingsBtn(false);
+  const app = document.getElementById("historyApp");
+  app.style.display="flex";
+  // HISTORIAに入るたびに、進捗・時代選択・モード選択をリセット。
+  // ただし間違えた問題（missedByEra）は保持する。
+  state.eraIndex=null;
+  state.selected=null;
+  state.mode="standby";
+  state.queue=[]; state.pos=0; state.correct=0; state.flipped=false;
+  renderEras(); renderModes(); renderStandby();
+  window.scrollTo(0,0);
+  // 順次フェードイン（HISTORIA → 時代を選ぶ → 出題モード → スライド）
+  app.classList.remove("intro");
+  void app.offsetWidth;          // リフローでアニメをリセット（再入場でも再生）
+  app.classList.add("intro");
+  setTimeout(()=>{ app.classList.remove("intro"); }, 2600);
+}
+function showSophia(){
+  hideAllScreens();
+  setSettingsBtn(false);
+  document.getElementById("sophiaScreen").style.display="flex";
+  window.scrollTo(0,0);
+  if(typeof initSophia==="function") initSophia();
+}
+
+// トップ画面のボタンをつなぐ
+document.getElementById("goRekishi").onclick = showHistory;
+document.getElementById("goChiri").onclick   = ()=> showSoon("地理 / GEOGRAPHIA");
+document.getElementById("goKoumin").onclick  = ()=> showSoon("公民 / CIVITAS");
+document.getElementById("goSophia").onclick  = showSophia;
+
+// 設定パネルの開閉
+(function(){
+  const btn = document.getElementById("settingsBtn");
+  const panel = document.getElementById("settingsPanel");
+  const closeBtn = document.getElementById("settingsClose");
+  if(!btn || !panel) return;
+  function open(){ panel.classList.add("open"); }
+  function close(){ panel.classList.remove("open"); }
+  btn.addEventListener("click", open);
+  closeBtn.addEventListener("click", close);
+  // 背景（パネルの外）クリックで閉じる
+  panel.addEventListener("click", e=>{ if(e.target===panel) close(); });
+  // Escキーで閉じる
+  document.addEventListener("keydown", e=>{ if(e.key==="Escape") close(); });
+})();
+
+// 「花びらを舞わせる」ON/OFF（設定を保存して次回も反映）
+(function(){
+  const KEY = "societas_petals_v1";
+  const tgl = document.getElementById("petalToggle");
+  // 保存値を読み込み（デフォルトはON）
+  let on = true;
+  try{ if(localStorage.getItem(KEY)==="off") on=false; }catch(e){}
+  window.petalsEnabled = on;
+  function render(){
+    if(!tgl) return;
+    tgl.textContent = on ? "ON" : "OFF";
+    tgl.setAttribute("aria-pressed", on ? "true" : "false");
+  }
+  render();
+  if(tgl){
+    tgl.addEventListener("click", ()=>{
+      on = !on;
+      window.petalsEnabled = on;
+      try{ localStorage.setItem(KEY, on ? "on" : "off"); }catch(e){}
+      render();
+    });
+  }
+})();
+
+// 環境音：ボタンをクリックで種類を循環（木漏れ日→せせらぎ→…）、OFFは別ボタン。
+(function(){
+  const KEY_TYPE = "societas_ambient_type_v1";
+  const KEY_ON   = "societas_ambient_on_v1";
+  const cycleBtn = document.getElementById("ambientCycle");
+  const offBtn   = document.getElementById("ambientOff");
+  const nameEl   = cycleBtn ? cycleBtn.querySelector(".amb-name") : null;
+
+  // 循環する環境音の種類（順番＝表示順）
+  const TYPES = [
+    { key:"komorebi", label:"木漏れ日" },
+    { key:"seseragi", label:"せせらぎ" },
+    { key:"shiosai", label:"潮騒" }
+  ];
+  function labelOf(key){ const t=TYPES.find(t=>t.key===key); return t?t.label:TYPES[0].label; }
+
+  // 保存値の読み込み（デフォルト：木漏れ日・ON）
+  let type = "komorebi";
+  let isOn = true;
+  try{ const v=localStorage.getItem(KEY_TYPE); if(v) type=v; }catch(e){}
+  try{ if(localStorage.getItem(KEY_ON)==="off") isOn=false; }catch(e){}
+  if(!TYPES.some(t=>t.key===type)) type="komorebi";
+
+  window.ambientType = type;
+  window.ambientEnabled = isOn;
+
+  function render(){
+    if(nameEl) nameEl.textContent = labelOf(type);
+    if(cycleBtn) cycleBtn.classList.toggle("muted", !isOn);   // OFF中は控えめ表示
+    if(offBtn) offBtn.classList.toggle("active", !isOn);
+  }
+  // 実際の再生に反映（userGesture=trueなら即フェード）
+  function apply(userGesture){
+    window.ambientType = type;
+    window.ambientEnabled = isOn;
+    if(!ambientAudio) return;
+    if(!isOn){ ambientAudio.stop(1); return; }
+    if(ambientAudio.running){ ambientAudio.setType(type); }
+    else { ambientAudio.start(type, userGesture ? 1.2 : 3); }
+  }
+  render();
+
+  // 環境音ボタン：クリックで次の種類へ（アニメーション付き）。OFF中に押すとONにして今の種類を鳴らす。
+  if(cycleBtn){
+    cycleBtn.addEventListener("click", ()=>{
+      if(!isOn){ isOn = true; }
+      else {
+        const i = TYPES.findIndex(t=>t.key===type);
+        type = TYPES[(i+1) % TYPES.length].key;
+      }
+      try{ localStorage.setItem(KEY_TYPE, type); localStorage.setItem(KEY_ON, "on"); }catch(e){}
+      // ラベル切り替えアニメーション
+      cycleBtn.classList.remove("swap");
+      void cycleBtn.offsetWidth;
+      cycleBtn.classList.add("swap");
+      render();
+      apply(true);
+    });
+  }
+  // OFFボタン
+  if(offBtn){
+    offBtn.addEventListener("click", ()=>{
+      isOn = false;
+      try{ localStorage.setItem(KEY_ON, "off"); }catch(e){}
+      render();
+      apply(true);
+    });
+  }
+})();
+
+/* ============================================================
+   SOPHIA（AI相談チャット）
+   今はUIのみ。getSophiaResponse() が実際の応答を作る場所で、
+   ここを本物のAPI呼び出し（Cloudflare Worker等）に差し替えれば
+   そのまま本番のAI相談機能になる。
+   ============================================================ */
+let sophiaHistory = [];       // {role:"user"|"ai", text} の配列（このセッション中のみ保持）
+let sophiaStarted = false;
+
+function initSophia(){
+  if(!sophiaStarted){
+    sophiaStarted = true;
+    sophiaHistory.push({role:"ai", text:"こんにちは、SOPHIAだよ。社会科でわからないことがあったら、なんでも聞いてね。"});
+  }
+  renderSophiaMessages();
+  const input = document.getElementById("sophiaInput");
+  if(input) setTimeout(()=>input.focus(), 300);
+}
+
+function renderSophiaMessages(){
+  const box = document.getElementById("sophiaMessages");
+  if(!box) return;
+  box.innerHTML = sophiaHistory.map(m=>{
+    if(m.role==="ai"){
+      return `<div class="sophia-msg ai"><span class="who">SOPHIA</span>${escapeHtml(m.text)}</div>`;
+    }
+    return `<div class="sophia-msg user">${escapeHtml(m.text)}</div>`;
+  }).join("");
+  box.scrollTop = box.scrollHeight;
+}
+
+// ここが実際の応答を作る場所（今はダミー）。
+// 将来ここをCloudflare Worker等への fetch に差し替えれば、そのまま本物のAI相談になる。
+function getSophiaResponse(userText, history){
+  return new Promise(resolve=>{
+    setTimeout(()=>{
+      resolve("ごめんね、SOPHIAはまだAIとつながっていないんだ。もうすこし待っててね。（この返信はダミーです）");
+    }, 700 + Math.random()*500);
+  });
+}
+
+function sendSophiaMessage(){
+  const input = document.getElementById("sophiaInput");
+  const sendBtn = document.getElementById("sophiaSend");
+  if(!input) return;
+  const text = input.value.trim();
+  if(!text) return;
+
+  sophiaHistory.push({role:"user", text});
+  input.value = "";
+  input.style.height = "auto";
+  renderSophiaMessages();
+
+  // 「入力中…」を出す
+  const box = document.getElementById("sophiaMessages");
+  const typing = document.createElement("div");
+  typing.className = "sophia-typing";
+  typing.id = "sophiaTyping";
+  typing.textContent = "SOPHIAが考えています…";
+  box.appendChild(typing);
+  box.scrollTop = box.scrollHeight;
+  if(sendBtn) sendBtn.disabled = true;
+
+  getSophiaResponse(text, sophiaHistory).then(reply=>{
+    const t = document.getElementById("sophiaTyping");
+    if(t) t.remove();
+    sophiaHistory.push({role:"ai", text:reply});
+    renderSophiaMessages();
+    if(sendBtn) sendBtn.disabled = false;
+  });
+}
+
+(function(){
+  const input = document.getElementById("sophiaInput");
+  const sendBtn = document.getElementById("sophiaSend");
+  if(!input || !sendBtn) return;
+  sendBtn.addEventListener("click", sendSophiaMessage);
+  // Enterで送信、Shift+Enterで改行
+  input.addEventListener("keydown", e=>{
+    if(e.key==="Enter" && !e.shiftKey){
+      e.preventDefault();
+      sendSophiaMessage();
+    }
+  });
+  // テキストエリアの高さを内容に合わせて自動調整
+  input.addEventListener("input", ()=>{
+    input.style.height = "auto";
+    input.style.height = Math.min(input.scrollHeight, 120) + "px";
+  });
+})();
+
+// 最初はホーム画面を表示
+showHome();
+
+/* 起動スプラッシュの制御：
+   数秒表示 → フェードアウト。表示中にクリック／キー押下で即フェードアウト。 */
+(function(){
+  const splash = document.getElementById("splash");
+  if(!splash) return;
+  let dismissed = false;
+  function dismiss(){
+    if(dismissed) return;
+    dismissed = true;
+    splash.classList.add("out");
+    // スプラッシュが消え始めるのに合わせて、トップ画面を順次フェードインさせる
+    const home = document.getElementById("homeScreen");
+    if(home){
+      home.classList.add("intro");
+      // 全フェーズ（最大 delay1.9s + duration0.9s ≒ 2.8s）終了後に intro を外す
+      setTimeout(()=>{ home.classList.remove("intro"); }, 3200);
+    }
+    // 設定ボタンも、見出しが出そろうころに遅れてフェードイン
+    const sbtn = document.getElementById("settingsBtn");
+    if(sbtn){
+      sbtn.classList.add("intro");
+      setTimeout(()=>{ sbtn.classList.remove("intro"); }, 3600);
+    }
+    // 3つの見出しが出終わってから、桜の花びらを散らし始める
+    setTimeout(()=>{ if(typeof startSakura==="function") startSakura(); }, 3200);
+    // 桜と同時に、環境音をフェードイン（選ばれている種類で）
+    setTimeout(()=>{
+      if(window.ambientEnabled!==false && ambientAudio) ambientAudio.start(window.ambientType || "komorebi", 3);
+    }, 3200);
+    // フェードアウト（.6s）が終わったらDOMから消す
+    setTimeout(()=>{ splash.remove(); }, 650);
+    window.removeEventListener("click", dismiss);
+    window.removeEventListener("keydown", dismiss);
+    window.removeEventListener("touchstart", dismiss);
+  }
+  // 4秒後に自動フェードアウト
+  const timer = setTimeout(dismiss, 4000);
+  // 表示中の操作で即フェードアウト
+  window.addEventListener("click", dismiss);
+  window.addEventListener("keydown", dismiss);
+  window.addEventListener("touchstart", dismiss, {passive:true});
+})();
+
+/* 自動再生制限で音が出せなかった場合の保険：
+   最初のユーザー操作で、環境音がONなのに鳴っていなければ開始する。 */
+(function(){
+  function unlock(){
+    if(window.ambientEnabled!==false && ambientAudio && !ambientAudio.running){
+      ambientAudio.start(window.ambientType || "komorebi", 2);
+    }
+    window.removeEventListener("pointerdown", unlock);
+    window.removeEventListener("keydown", unlock);
+  }
+  window.addEventListener("pointerdown", unlock);
+  window.addEventListener("keydown", unlock);
+})();
+
+/* #main の中身が差し替わるたびに、子要素のフェードインを付け直す。
+   （同じ要素が使い回されてもアニメが再生されるようにする） */
+(function(){
+  const main = document.getElementById("main");
+  if(!main) return;
+  const applyFade = ()=>{
+    for(const child of main.children){
+      child.style.animation="none";
+      // 強制リフロー：これでアニメがリセットされ、次の行で再生される
+      void child.offsetWidth;
+      child.style.animation="fadeInUp .32s ease-out";
+    }
+  };
+  const observer = new MutationObserver(applyFade);
+  observer.observe(main, { childList:true });
+})();
+
+/* ============================================================
+   背景に舞う桜の花びら（全画面共通・最背面）
+   起動直後は散らさず、トップ画面の見出しが出終わってから開始する。
+   ============================================================ */
+let startSakura = function(){
+  const canvas = document.getElementById("sakura");
+  if(!canvas) return;
+  const ctx = canvas.getContext("2d");
+  let W=0, H=0, dpr=Math.min(window.devicePixelRatio||1, 2);
+
+  function resize(){
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = W*dpr; canvas.height = H*dpr;
+    canvas.style.width = W+"px"; canvas.style.height = H+"px";
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  resize();
+  window.addEventListener("resize", resize);
+
+  // 枚数は画面幅に応じて控えめに（狭い画面はより少なく）
+  const COUNT = Math.max(10, Math.min(18, Math.round(W/90)));
+  const petals = [];
+
+  function rand(a,b){ return a + Math.random()*(b-a); }
+
+  function makePetal(initial){
+    return {
+      x: rand(0, W),
+      y: initial ? rand(0, H) : rand(-40, -8),
+      size: rand(19, 32),
+      speedY: rand(0.9, 1.9),          // 速めに落ちる
+      drift: rand(0.4, 1.3),           // 風で右へ流れる基本の横速度
+      sway: rand(0.02, 0.05),          // 左右にゆれる速さ（速く）
+      swayAmp: rand(14, 32),           // ゆれ幅（大きく＝風にあおられる感じ）
+      phase: rand(0, Math.PI*2),
+      rot: rand(0, Math.PI*2),
+      rotSpeed: rand(-0.06, 0.06),     // くるくる回る
+      opacity: rand(0.55, 0.9)         // はっきりめ
+    };
+  }
+  for(let i=0;i<COUNT;i++){
+    const p = makePetal(false);
+    p.y = rand(-H*0.6, -10);   // 画面上部より上から、少しずつ入ってくる
+    petals.push(p);
+  }
+
+  // 桜の花びら1枚を描く（根元は細く、先端は広がってV字の切れ込み）
+  function drawPetal(p){
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rot);
+    ctx.globalAlpha = p.opacity;
+    const s = p.size;
+    ctx.beginPath();
+    // 根元（下・細い）→左へふくらみながら上へ→先端左の丸い肩→中央のV字くぼみ→先端右の肩→右のふくらみ→根元へ
+    ctx.moveTo(0, s*0.6);                                   // 根元（細い先）
+    ctx.bezierCurveTo(-s*0.30, s*0.55, -s*0.52, s*0.10, -s*0.44, -s*0.30); // 左のふくらみ
+    ctx.bezierCurveTo(-s*0.38, -s*0.52, -s*0.14, -s*0.56, -s*0.10, -s*0.44); // 先端左の丸い肩
+    ctx.quadraticCurveTo(0, -s*0.30, s*0.10, -s*0.44);      // 中央のV字の切れ込み
+    ctx.bezierCurveTo(s*0.14, -s*0.56, s*0.38, -s*0.52, s*0.44, -s*0.30);   // 先端右の丸い肩
+    ctx.bezierCurveTo(s*0.52, s*0.10, s*0.30, s*0.55, 0, s*0.6);            // 右のふくらみ→根元へ
+    ctx.closePath();
+    // 中心が淡く、ふちほど濃い放射グラデーションで立体感
+    const grad = ctx.createRadialGradient(0, s*0.1, s*0.05, 0, 0, s*0.7);
+    grad.addColorStop(0,  "#fff0f5");
+    grad.addColorStop(0.55, "#fbc0d5");
+    grad.addColorStop(1,  "#ef7fa8");
+    ctx.fillStyle = grad;
+    ctx.fill();
+    // 中央のうっすらした筋（花びらの脈）
+    ctx.globalAlpha = p.opacity * 0.35;
+    ctx.strokeStyle = "#e86b98";
+    ctx.lineWidth = Math.max(0.6, s*0.03);
+    ctx.beginPath();
+    ctx.moveTo(0, s*0.5);
+    ctx.quadraticCurveTo(0, 0, 0, -s*0.38);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // 突風用の軽量な花びら描画（大量に描くのでグラデ・脈は省く）
+  const gustColors = ["#fbc0d5","#f7a8c4","#f48fb4","#ef7fa8"];
+  function drawPetalLite(p){
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rot);
+    ctx.globalAlpha = p.opacity;
+    const s = p.size;
+    ctx.beginPath();
+    ctx.moveTo(0, s*0.6);
+    ctx.bezierCurveTo(-s*0.30, s*0.55, -s*0.52, s*0.10, -s*0.44, -s*0.30);
+    ctx.bezierCurveTo(-s*0.38, -s*0.52, -s*0.14, -s*0.56, -s*0.10, -s*0.44);
+    ctx.quadraticCurveTo(0, -s*0.30, s*0.10, -s*0.44);
+    ctx.bezierCurveTo(s*0.14, -s*0.56, s*0.38, -s*0.52, s*0.44, -s*0.30);
+    ctx.bezierCurveTo(s*0.52, s*0.10, s*0.30, s*0.55, 0, s*0.6);
+    ctx.closePath();
+    ctx.fillStyle = p.color;
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // 突風で横切る花びら（普段は空。突風のときだけ大量に生成し、画面外で消える）
+  const gustPetals = [];
+
+  // 突風の花びら1枚（画面の左上・上のあたりから、斜め右下へ吹き下ろす）
+  // cx,cy は「かたまりの中心」。その周りに不規則に散らして塊感を出す。
+  function makeGustPetal(cx, cy){
+    const s = rand(16, 36);
+    // 斜め右下向きの速度（下向き成分を強めに）。少しばらつかせて不規則に。
+    const speed = rand(11, 20);
+    const ang = rand(0.5, 0.95);            // ラジアン。右水平=0, 真下=π/2 の間 → 斜め下
+    return {
+      x: cx + rand(-160, 160),
+      y: cy + rand(-160, 160),
+      size: s,
+      vx: Math.cos(ang)*speed,
+      vy: Math.sin(ang)*speed,
+      sway: rand(0.04, 0.11),
+      swayAmp: rand(8, 22),
+      phase: rand(0, Math.PI*2),
+      rot: rand(0, Math.PI*2),
+      rotSpeed: rand(-0.24, 0.24),
+      opacity: rand(0.7, 1),
+      color: gustColors[Math.floor(Math.random()*gustColors.length)]
+    };
+  }
+
+  // 突風を起こす：斜め上（左上〜上）から、不規則なかたまりで大量に吹き下ろす。
+  // かたまりの中心をいくつか動かしながら、その周りに花びらを散らす。長め（約5〜6秒）。
+  // 大画面でも覆い尽くせるよう、画面の広さに応じて枚数を増やす。
+  function triggerGust(){
+    if(window.petalsEnabled===false) return;   // OFFのときは吹かせない
+    const areaFactor = (W*H)/(1280*720);       // 画面の広さの目安（大画面ほど大きい）
+    const total = Math.round(rand(1800, 2400) * Math.max(1, areaFactor));  // 覆い尽くす量
+    let launched = 0;
+    // かたまりの発生源（画面上部の左寄りを、時間とともに右へ流していく）
+    let t = 0;
+    const launcher = setInterval(()=>{
+      t += 1;
+      // このタイミングのかたまり中心：左上から右へ移動しつつ、上下に不規則に揺らす
+      const cx = -80 + t*rand(14, 26) + rand(-40,40);
+      const cy = rand(-160, H*0.35) + Math.sin(t*0.5)*80;
+      const burst = Math.round(rand(60, 90) * Math.max(1, areaFactor));   // 一度にどっと放出
+      for(let i=0;i<burst && launched<total;i++){ gustPetals.push(makeGustPetal(cx, cy)); launched++; }
+      if(launched>=total) clearInterval(launcher);
+    }, 55);
+  }
+  // 長押しなど外部からも突風を呼べるように公開（確率スケジュールとは独立）
+  window.triggerGust = triggerGust;
+
+  // 次の突風を、平均約15分・ランダムな間隔で予約（1時間あたり平均4回程度）
+  function scheduleGust(){
+    // 5〜25分のあいだでランダム（平均15分）。固定間隔にはしない。
+    const delay = rand(5*60*1000, 25*60*1000);
+    setTimeout(()=>{ triggerGust(); scheduleGust(); }, delay);
+  }
+  scheduleGust();
+
+  let last = performance.now();
+  function tick(now){
+    const dt = Math.min((now-last)/16.67, 2.5);  // 60fps基準の経過フレーム数
+    last = now;
+    ctx.clearRect(0,0,W,H);
+    // OFFのときは何も描かず、突風の花びらも消しておく
+    if(window.petalsEnabled===false){
+      if(gustPetals.length) gustPetals.length = 0;
+      requestAnimationFrame(tick);
+      return;
+    }
+    // 通常の花びら
+    for(const p of petals){
+      p.phase += p.sway*dt;
+      p.y += p.speedY*dt;
+      // 基本は風で右へ流れつつ、サインカーブで大きく左右にあおられる
+      p.x += (p.drift + Math.sin(p.phase)*p.swayAmp*0.06)*dt;
+      p.rot += p.rotSpeed*dt;
+      // 画面下・横に出たら上に戻す
+      if(p.y > H+20){ Object.assign(p, makePetal(false)); }
+      if(p.x < -30) p.x = W+30;
+      else if(p.x > W+30) p.x = -30;
+      drawPetal(p);
+    }
+    // 突風の花びら（右の画面外へ抜けたら配列から削除）
+    for(let i=gustPetals.length-1;i>=0;i--){
+      const p = gustPetals[i];
+      p.phase += p.sway*dt;
+      p.x += p.vx*dt;
+      p.y += (p.vy + Math.sin(p.phase)*p.swayAmp*0.05)*dt;
+      p.rot += p.rotSpeed*dt;
+      drawPetalLite(p);
+      if(p.x > W+40 || p.y > H+40 || p.y < -60){ gustPetals.splice(i,1); }
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+};
+
+/* ============================================================
+   環境音をコードで生成（木漏れ日＝そよ風＋鳥 / せせらぎ＝流水）。
+   ブラウザの自動再生制限のため、最初のユーザー操作後に開始できる。
+   種類はいつでも切り替え可能。
+   ============================================================ */
+let ambientAudio = (function(){
+  let actx = null, master = null, running = false, birdTimer = null;
+  let layer = null;          // 現在鳴っている音のノード群（切り替え時に停止する）
+  let curType = "komorebi";
+
+  function ensureContext(){
+    if(actx) return true;
+    try{
+      actx = new (window.AudioContext || window.webkitAudioContext)();
+      master = actx.createGain();
+      master.gain.value = 0;           // 無音から始めてフェードインする
+      master.connect(actx.destination);
+      return true;
+    }catch(e){ return false; }
+  }
+
+  function makeNoiseSource(seconds){
+    const bufferSize = (seconds||2) * actx.sampleRate;
+    const buf = actx.createBuffer(1, bufferSize, actx.sampleRate);
+    const data = buf.getChannelData(0);
+    for(let i=0;i<bufferSize;i++) data[i] = Math.random()*2 - 1;
+    const src = actx.createBufferSource();
+    src.buffer = buf; src.loop = true;
+    return src;
+  }
+
+  // 現在のレイヤーを止めて片付ける
+  function teardownLayer(){
+    if(!layer) return;
+    clearTimeout(birdTimer);
+    (layer.nodes||[]).forEach(n=>{ try{ n.stop && n.stop(); }catch(e){} try{ n.disconnect && n.disconnect(); }catch(e){} });
+    layer = null;
+  }
+
+  // 木漏れ日：そよ風（丸いノイズ）＋鳥のさえずり
+  function buildKomorebi(){
+    const nodes = [];
+    const noise = makeNoiseSource(2);
+    const lp = actx.createBiquadFilter();
+    lp.type="lowpass"; lp.frequency.value=550; lp.Q.value=0.7;
+    const g = actx.createGain(); g.gain.value=0.12;
+    const lfo = actx.createOscillator(); lfo.frequency.value=0.09;
+    const lfoGain = actx.createGain(); lfoGain.gain.value=0.06;
+    lfo.connect(lfoGain).connect(g.gain);
+    noise.connect(lp).connect(g).connect(master);
+    noise.start(); lfo.start();
+    nodes.push(noise, lfo);
+    // 鳥のさえずり
+    function chirp(){
+      if(!actx || !running || curType!=="komorebi") return;
+      const now = actx.currentTime;
+      const notes = 2 + Math.floor(Math.random()*3);
+      let t = now;
+      for(let i=0;i<notes;i++){
+        const osc = actx.createOscillator();
+        const og = actx.createGain();
+        osc.type="sine";
+        const base = 1800 + Math.random()*1600;
+        osc.frequency.setValueAtTime(base, t);
+        osc.frequency.exponentialRampToValueAtTime(base*(1.15+Math.random()*0.5), t+0.05);
+        osc.frequency.exponentialRampToValueAtTime(base*0.9, t+0.12);
+        const vol = 0.05 + Math.random()*0.05;
+        og.gain.setValueAtTime(0.0001, t);
+        og.gain.exponentialRampToValueAtTime(vol, t+0.01);
+        og.gain.exponentialRampToValueAtTime(0.0001, t+0.13);
+        osc.connect(og).connect(master);
+        osc.start(t); osc.stop(t+0.15);
+        t += 0.09 + Math.random()*0.06;
+      }
+      birdTimer = setTimeout(chirp, 2000 + Math.random()*7000);
+    }
+    birdTimer = setTimeout(chirp, 1500 + Math.random()*2000);
+    return { nodes };
+  }
+
+  // せせらぎ：小川がチョロチョロ流れる感じ（控えめな水の土台＋不規則な水滴の粒）
+  function buildSeseragi(){
+    const nodes = [];
+    // 土台：ごく控えめな水の流れ（うるさくしない）
+    const bed = makeNoiseSource(2);
+    const bedBP = actx.createBiquadFilter();
+    bedBP.type="bandpass"; bedBP.frequency.value=900; bedBP.Q.value=0.7;
+    const bedG = actx.createGain(); bedG.gain.value=0.05;   // 小さめ
+    bed.connect(bedBP).connect(bedG).connect(master);
+    bed.start(); nodes.push(bed);
+
+    // 水滴・泡：短い帯域ノイズを不規則に鳴らして「チョロチョロ／ポコポコ」感を出す
+    let dropTimer = null;
+    function drop(){
+      if(!actx || !running || (layer && layer.type!=="seseragi")) return;
+      const now = actx.currentTime;
+      // 1〜3粒まとめて
+      const n = 1 + Math.floor(Math.random()*3);
+      for(let i=0;i<n;i++){
+        const t = now + i*(0.03 + Math.random()*0.06);
+        const src = makeNoiseSource(0.3);
+        const bp = actx.createBiquadFilter();
+        bp.type="bandpass";
+        const f = 900 + Math.random()*2200;      // 粒ごとに高さがちがう
+        bp.frequency.setValueAtTime(f, t);
+        bp.frequency.exponentialRampToValueAtTime(f*1.5, t+0.06);  // 上がって「チョロッ」
+        bp.Q.value = 6 + Math.random()*8;
+        const g = actx.createGain();
+        const vol = 0.05 + Math.random()*0.07;
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(vol, t+0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, t+0.10+Math.random()*0.08);
+        src.connect(bp).connect(g).connect(master);
+        src.start(t); src.stop(t+0.25);
+      }
+      // 次の粒まで不規則な短い間隔（チョロチョロ絶え間なく）
+      dropTimer = setTimeout(drop, 120 + Math.random()*380);
+    }
+    dropTimer = setTimeout(drop, 200);
+    // teardown用に、タイマーを止められるダミーノードを入れておく
+    nodes.push({ stop(){ clearTimeout(dropTimer); }, disconnect(){} });
+    return { nodes };
+  }
+
+  // 潮騒：波が寄せては返す（ゆっくり周期的に盛り上がって引く、崩れる瞬間はノイズが明るくなる）
+  function buildShiosai(){
+    const nodes = [];
+    // 波の土台（ゴーッという広帯域の量感。低域に寄せすぎない＝風にしない）
+    const bed = makeNoiseSource(2);
+    const bedBP = actx.createBiquadFilter();
+    bedBP.type="bandpass"; bedBP.frequency.value=1000; bedBP.Q.value=0.35;
+    const bedHP = actx.createBiquadFilter();
+    bedHP.type="highpass"; bedHP.frequency.value=250;   // こもった低音だけにならないようにする
+    const bedG = actx.createGain(); bedG.gain.value=0.001;
+    bed.connect(bedBP).connect(bedHP).connect(bedG).connect(master);
+    bed.start();
+    nodes.push(bed);
+
+    // 泡のシュワシュワ（崩れたあと、高域ノイズがゆっくり自然にゆらぎながら消えていく）
+    const fizz = makeNoiseSource(2);
+    const fizzHP = actx.createBiquadFilter();
+    fizzHP.type="highpass"; fizzHP.frequency.value=2200;
+    const fizzLP = actx.createBiquadFilter();
+    fizzLP.type="lowpass"; fizzLP.frequency.value=7000;   // 上限も絞って耳に痛くしない
+    // 全体の勢い（クラッシュのたびに立ち上がり、指数的にじわじわ減衰）＝一定間隔の更新はしない
+    const fizzEnv = actx.createGain(); fizzEnv.gain.value = 0.0001;
+    // その上に、非整数比のゆっくりしたLFOを何本か重ねて「規則的でない」自然なゆらぎを作る
+    const fizzMod = actx.createGain(); fizzMod.gain.value = 0.045;
+    [3.7, 5.3, 8.1].forEach((freq, i)=>{
+      const lfo = actx.createOscillator(); lfo.frequency.value = freq;
+      const lg = actx.createGain(); lg.gain.value = 0.30 + i*0.05;
+      lfo.connect(lg).connect(fizzMod.gain);
+      lfo.start();
+      nodes.push(lfo);
+    });
+    fizz.connect(fizzHP).connect(fizzLP).connect(fizzMod).connect(fizzEnv).connect(master);
+    fizz.start();
+    nodes.push(fizz);
+
+    // 砕ける瞬間：広帯域のノイズが一気に立ち上がる「ザッパーン」
+    function crash(peakVol){
+      const now = actx.currentTime;
+      const src = makeNoiseSource(1.0);
+      const hp = actx.createBiquadFilter();
+      hp.type="highpass"; hp.frequency.value=350;      // 広帯域（狭いバンドパスにしない）
+      const lp = actx.createBiquadFilter();
+      lp.type="lowpass"; lp.frequency.value=6500;
+      const g = actx.createGain();
+      const vol = peakVol*1.5;
+      g.gain.setValueAtTime(0.0001, now);
+      g.gain.exponentialRampToValueAtTime(vol, now+0.09);     // 一気に砕ける（速い立ち上がり）
+      g.gain.exponentialRampToValueAtTime(0.0001, now+0.7);   // すっと引く
+      src.connect(hp).connect(lp).connect(g).connect(master);
+      src.start(now); src.stop(now+1.2);
+      nodes.push(src);
+      // 泡のシュワシュワを、なめらかな山（すっと立ち上がりゆっくり消える）で鳴らす
+      fizzEnv.gain.cancelScheduledValues(now);
+      fizzEnv.gain.setValueAtTime(Math.max(fizzEnv.gain.value,0.0001), now);
+      fizzEnv.gain.exponentialRampToValueAtTime(0.9, now+0.18);
+      fizzEnv.gain.exponentialRampToValueAtTime(0.0001, now+2.6+Math.random()*1.2);
+    }
+
+    // 1つの波：じわっと盛り上がり、ピークで砕けて（クラッシュ＋泡）、ゆっくり引いていく
+    let waveTimer = null;
+    function wave(){
+      if(!actx || !running || (layer && layer.type!=="shiosai")) return;
+      const now = actx.currentTime;
+      const rise = 2.0 + Math.random()*1.6;      // 寄せる時間
+      const fall = 3.2 + Math.random()*2.4;      // 引く時間
+      const peakVol = 0.11 + Math.random()*0.06;
+
+      bedG.gain.cancelScheduledValues(now);
+      bedG.gain.setValueAtTime(Math.max(bedG.gain.value,0.001), now);
+      bedG.gain.exponentialRampToValueAtTime(peakVol, now+rise);
+      bedG.gain.exponentialRampToValueAtTime(0.015, now+rise+fall);
+
+      // ピークのタイミングで「砕ける」
+      setTimeout(()=>{ if(running && layer && layer.type==="shiosai") crash(peakVol); }, rise*1000);
+
+      // 次の波まで：一定のリズム感は保ちつつ、毎回かなり不規則にする（たまに間が空く「凪」も）
+      const base = (rise+fall)*1000;
+      const jitter = (Math.random()-0.5)*2 * base*0.35;     // ±35%程度ばらつかせる
+      const lull = Math.random()<0.15 ? base*(0.4 + Math.random()*0.5) : 0;  // まれに長い間隔（凪）
+      waveTimer = setTimeout(wave, Math.max(1800, base*0.55 + jitter + lull));
+    }
+    waveTimer = setTimeout(wave, 300);
+    nodes.push({ stop(){ clearTimeout(waveTimer); }, disconnect(){} });
+    return { nodes };
+  }
+
+  function buildLayer(type){
+    if(type==="seseragi") return buildSeseragi();
+    if(type==="shiosai") return buildShiosai();
+    return buildKomorebi();
+  }
+
+  // 指定した種類で開始（またはフェードイン）。ユーザー操作後に呼ぶ。
+  function start(type, fadeSec){
+    if(type) curType = type;
+    if(!ensureContext()) return;
+    if(actx.state === "suspended") actx.resume();
+    // すでに鳴っていて種類が同じなら何もしない
+    if(running && layer && layer.type===curType) return;
+    teardownLayer();
+    running = true;
+    layer = buildLayer(curType);
+    layer.type = curType;
+    const now = actx.currentTime;
+    master.gain.cancelScheduledValues(now);
+    master.gain.setValueAtTime(master.gain.value, now);
+    master.gain.linearRampToValueAtTime(0.9, now + (fadeSec||3));
+  }
+  // 種類を切り替える（鳴っていなければ何もしない）
+  function setType(type, fadeSec){
+    curType = type;
+    if(!running) return;
+    teardownLayer();
+    layer = buildLayer(curType);
+    layer.type = curType;
+  }
+  function stop(fadeSec){
+    if(!actx || !running) return;
+    running = false;
+    teardownLayer();
+    const now = actx.currentTime;
+    master.gain.cancelScheduledValues(now);
+    master.gain.setValueAtTime(master.gain.value, now);
+    master.gain.linearRampToValueAtTime(0, now + (fadeSec||1));
+  }
+  return { start, setType, stop, get running(){ return running; } };
+})();
+
+/* トップ画面の見出し「SOCIETAS」をクリックすると突風を起こす
+   （確率スケジュールとは独立の裏ワザ）。 */
+(function(){
+  const title = document.querySelector("#homeScreen .home-title");
+  if(!title) return;
+  title.style.cursor = "pointer";
+  title.addEventListener("click", ()=>{
+    if(typeof window.triggerGust==="function") window.triggerGust();
+  });
+})();
 </script>
 </body>
 </html>
